@@ -1,0 +1,370 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================
+   BAIKUNTHH JEWELLERS — LUXURY DESIGN SYSTEM
+   ========================================== */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-bj-ivory text-bj-charcoal;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #FAF9F6; }
+  ::-webkit-scrollbar-thumb { background: #C5A059; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #B38F4D; }
+
+  /* Selection */
+  ::selection { background: rgba(197, 160, 89, 0.25); color: #1A1A1A; }
+
+  /* Tap highlight */
+  button, a { -webkit-tap-highlight-color: transparent; }
+
+  /* Focus ring */
+  *:focus-visible {
+    outline: 2px solid #C5A059;
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* ===== TYPOGRAPHY ===== */
+  .font-serif {
+    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  }
+
+  .font-display {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 bg-bj-gold text-white px-8 py-3.5 text-xs font-medium uppercase tracking-[0.2em] transition-all duration-300;
+  }
+  .btn-gold:hover {
+    @apply bg-bj-gold-dark shadow-luxury;
+    transform: translateY(-1px);
+  }
+  .btn-gold:active {
+    transform: translateY(0);
+  }
+
+  .btn-gold-sm {
+    @apply inline-flex items-center justify-center gap-1.5 bg-bj-gold text-white px-5 py-2.5 text-[10px] font-medium uppercase tracking-[0.2em] transition-all duration-300;
+  }
+  .btn-gold-sm:hover {
+    @apply bg-bj-gold-dark;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 border border-bj-charcoal text-bj-charcoal px-8 py-3.5 text-xs font-medium uppercase tracking-[0.2em] transition-all duration-300;
+  }
+  .btn-outline:hover {
+    @apply bg-bj-charcoal text-white;
+  }
+
+  .btn-outline-white {
+    @apply inline-flex items-center justify-center gap-2 border border-white text-white px-8 py-3.5 text-xs font-medium uppercase tracking-[0.2em] transition-all duration-300;
+  }
+  .btn-outline-white:hover {
+    @apply bg-white text-bj-charcoal;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 text-bj-charcoal px-4 py-2 text-xs font-medium uppercase tracking-[0.15em] transition-all duration-200 hover:text-bj-gold;
+  }
+
+  /* ===== INPUTS ===== */
+  .input-luxury {
+    @apply w-full border border-gray-200 px-4 py-3 text-sm bg-white outline-none transition-all duration-200 rounded-none;
+  }
+  .input-luxury:focus {
+    @apply border-bj-gold ring-2 ring-bj-gold/10;
+  }
+  .input-luxury::placeholder {
+    @apply text-gray-400;
+  }
+
+  .select-luxury {
+    @apply w-full border border-gray-200 px-4 py-3 text-sm bg-white outline-none transition-all duration-200 appearance-none cursor-pointer;
+  }
+  .select-luxury:focus {
+    @apply border-bj-gold ring-2 ring-bj-gold/10;
+  }
+
+  /* ===== LABELS ===== */
+  .label-luxury {
+    @apply block text-[10px] uppercase tracking-[0.2em] text-gray-500 mb-2 font-medium;
+  }
+
+  /* ===== SECTION HEADERS ===== */
+  .section-eyebrow {
+    @apply uppercase tracking-[0.35em] text-[10px] text-bj-gold mb-4 font-medium;
+  }
+
+  .section-title {
+    @apply font-serif text-4xl md:text-5xl text-bj-charcoal leading-tight;
+  }
+
+  /* ===== PAGE HERO (internal pages) ===== */
+  .page-hero {
+    @apply pt-32 pb-12 text-center relative overflow-hidden;
+  }
+  .page-hero::before {
+    content: '';
+    @apply absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-bj-gold/30 to-transparent;
+  }
+
+  /* ===== CARDS ===== */
+  .card-luxury {
+    @apply bg-white border border-gray-100 shadow-sm transition-all duration-300;
+  }
+  .card-luxury:hover {
+    @apply shadow-md border-bj-gold/20;
+  }
+
+  /* Glassmorphism card */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(197, 160, 89, 0.15);
+  }
+
+  /* ===== BADGES ===== */
+  .badge-gold {
+    @apply inline-block bg-bj-gold/10 text-bj-gold text-[9px] uppercase tracking-[0.2em] px-2.5 py-1 font-medium;
+  }
+  .badge-charcoal {
+    @apply inline-block bg-bj-charcoal text-white text-[9px] uppercase tracking-[0.2em] px-2.5 py-1 font-medium;
+  }
+  .badge-success {
+    @apply inline-block bg-emerald-50 text-emerald-700 text-[9px] uppercase tracking-[0.15em] px-2.5 py-1 font-medium rounded;
+  }
+  .badge-warning {
+    @apply inline-block bg-amber-50 text-amber-700 text-[9px] uppercase tracking-[0.15em] px-2.5 py-1 font-medium rounded;
+  }
+  .badge-error {
+    @apply inline-block bg-red-50 text-red-700 text-[9px] uppercase tracking-[0.15em] px-2.5 py-1 font-medium rounded;
+  }
+  .badge-blue {
+    @apply inline-block bg-blue-50 text-blue-700 text-[9px] uppercase tracking-[0.15em] px-2.5 py-1 font-medium rounded;
+  }
+
+  /* ===== SIZE SELECTOR ===== */
+  .size-option {
+    @apply w-10 h-10 border border-gray-200 text-sm flex items-center justify-center font-medium cursor-pointer transition-all duration-200 hover:border-bj-gold hover:text-bj-gold;
+  }
+  .size-option.selected {
+    @apply border-bj-gold bg-bj-gold text-white;
+  }
+  .size-option.unavailable {
+    @apply opacity-30 cursor-not-allowed line-through;
+  }
+
+  /* ===== DIVIDERS ===== */
+  .divider-gold {
+    @apply border-t border-bj-gold/20;
+  }
+
+  /* ===== GOLD SHIMMER ANIMATION ===== */
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .text-shimmer {
+    background: linear-gradient(90deg, #C5A059, #F7E7CE, #D4AF37, #C5A059);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+  }
+
+  /* Shimmer background loading effect */
+  @keyframes shimmerBg {
+    0% { background-position: -468px 0; }
+    100% { background-position: 468px 0; }
+  }
+
+  /* ===== FLOAT ANIMATION ===== */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .animate-float { animation: float 4s ease-in-out infinite; }
+
+  /* ===== SLIDE UP ===== */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-slide-up { animation: slideUp 0.5s ease-out forwards; }
+
+  /* ===== PRICE TAG ===== */
+  .price-tag {
+    @apply font-medium text-bj-charcoal text-lg;
+  }
+  .price-tag-sm {
+    @apply font-medium text-bj-charcoal text-base;
+  }
+
+  /* ===== ADMIN SIDEBAR ===== */
+  .admin-nav-item {
+    @apply flex items-center gap-3 w-full text-left px-4 py-3 text-sm rounded-lg transition-all duration-200 text-white/60 font-medium;
+  }
+  .admin-nav-item:hover {
+    @apply bg-white/10 text-white/90;
+  }
+  .admin-nav-item.active {
+    @apply bg-bj-gold/15 text-bj-gold border-l-2 border-bj-gold;
+  }
+
+  /* Admin table rows */
+  .admin-table-row {
+    @apply border-b border-gray-100 hover:bg-bj-gold/3 transition-colors;
+  }
+
+  /* ===== PRODUCT CARD HOVER ===== */
+  .product-image-zoom {
+    @apply overflow-hidden;
+  }
+  .product-image-zoom img {
+    @apply transition-transform duration-700;
+  }
+  .product-image-zoom:hover img {
+    @apply scale-105;
+  }
+
+  /* ===== PAGE TRANSITIONS ===== */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  /* ===== TOAST ===== */
+  @keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes slideOutRight {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+  }
+  .toast-enter { animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .toast-exit { animation: slideOutRight 0.25s ease-in forwards; }
+
+  /* ===== HERO OVERLAY ===== */
+  .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(26, 26, 26, 0.25) 0%,
+      rgba(26, 26, 26, 0.05) 40%,
+      rgba(26, 26, 26, 0.55) 100%
+    );
+  }
+
+  /* ===== GOLD BORDER ACCENT ===== */
+  .border-accent-gold {
+    position: relative;
+  }
+  .border-accent-gold::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: #C5A059;
+  }
+
+  /* ===== SKELETON LOADING ===== */
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
+  .skeleton {
+    @apply bg-gray-200;
+    animation: pulse-soft 1.6s ease-in-out infinite;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+    background-size: 400% 100%;
+    animation: shimmerBg 1.8s ease-in-out infinite;
+  }
+
+  /* ===== MOBILE NAV OVERLAY ===== */
+  .nav-overlay {
+    background: rgba(26, 26, 26, 0.55);
+    backdrop-filter: blur(4px);
+  }
+
+  /* ===== FILTER CHIPS ===== */
+  .filter-chip {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 bg-bj-gold/10 border border-bj-gold/20 text-bj-gold text-[10px] uppercase tracking-widest font-medium cursor-pointer transition-all;
+  }
+  .filter-chip:hover {
+    @apply bg-bj-gold/20;
+  }
+
+  /* ===== SECTION DIVIDER ===== */
+  .gold-rule {
+    @apply w-12 h-0.5 bg-bj-gold mx-auto mt-5;
+  }
+  .gold-rule-left {
+    @apply w-12 h-0.5 bg-bj-gold mt-4;
+  }
+}
+
+@layer utilities {
+  .text-bj-gold-gradient {
+    background: linear-gradient(135deg, #D4AF37, #C5A059, #B38F4D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-luxury-gradient {
+    background: linear-gradient(135deg, #1A1A1A 0%, #2D2618 100%);
+  }
+
+  .shadow-luxury {
+    box-shadow: 0 4px 24px rgba(197, 160, 89, 0.15);
+  }
+
+  .shadow-luxury-sm {
+    box-shadow: 0 2px 12px rgba(197, 160, 89, 0.1);
+  }
+
+  .shadow-card {
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Aspect ratios for jewellery images */
+  .aspect-jewellery { aspect-ratio: 3 / 4; }
+  .aspect-product { aspect-ratio: 1 / 1; }
+  .aspect-banner { aspect-ratio: 16 / 7; }
+
+  /* Hover border gold utility */
+  .hover-border-gold:hover { border-color: #C5A059; }
+
+  /* Text balance */
+  .text-balance { text-wrap: balance; }
+}

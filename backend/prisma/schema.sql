@@ -1,0 +1,192 @@
+CREATE DATABASE IF NOT EXISTS baikunthh_jewellers;
+USE baikunthh_jewellers;
+
+-- 1. USER & AUTH
+CREATE TABLE User (
+    id VARCHAR(191) PRIMARY KEY,
+    email VARCHAR(191) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL, 
+    role ENUM('CUSTOMER', 'ADMIN') NOT NULL DEFAULT 'CUSTOMER',
+    phone VARCHAR(50) NULL,
+    createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB;
+
+-- 2. TAXONOMY
+CREATE TABLE Category (
+    id VARCHAR(191) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+) ENGINE=InnoDB;
+
+CREATE TABLE Collection (
+    id VARCHAR(191) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+) ENGINE=InnoDB;
+
+-- 3. PRODUCTS & PRICING
+CREATE TABLE Product (
+    id VARCHAR(191) PRIMARY KEY,
+    sku VARCHAR(191) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    slug VARCHAR(191) NOT NULL UNIQUE,
+    categoryId VARCHAR(191) NOT NULL,
+    collectionId VARCHAR(191) NULL,
+    priceType ENUM('FIXED', 'RATE_BASED') NOT NULL DEFAULT 'RATE_BASED',
+    fixedPrice DECIMAL(12,2) NULL,
+    metalType ENUM('GOLD', 'SILVER', 'PLATINUM') NULL,
+    purity VARCHAR(50) NULL, -- e.g., '22K', '18K'
+    grossWeight DECIMAL(10,3) NULL,
+    netWeight DECIMAL(10,3) NULL,
+    makingCharge DECIMAL(10,2) NULL,
+    stoneCharge DECIMAL(10,2) NULL,
+    stock INT NOT NULL DEFAULT 0,
+    tags JSON NULL, -- e.g., ["NEW", "BESTSELLER"]
+    isFeatured BOOLEAN NOT NULL DEFAULT FALSE,
+    createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    updatedAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    CONSTRAINT FK_ProdCategory FOREIGN KEY (categoryId) REFERENCES Category(id),
+    CONSTRAINT FK_ProdCollection FOREIGN KEY (collectionId) REFERENCES Collection(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE ProductImage (
+    id VARCHAR(191) PRIMARY KEY,
+    url TEXT NOT NULL,
+    productId VARCHAR(191) NOT NULL,
+    CONSTRAINT FK_ImageProduct FOREIGN KEY (productId) REFERENCES Product(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- 4. LIVE RATES & HISTORY
+CREATE TABLE MetalRate (
+    id VARCHAR(191) PRIMARY KEY,
+    metal ENUM('GOLD', 'SILVER', 'PLATINUM') NOT NULL,
+    purity VARCHAR(50) NOT NULL,
+    rate DECIMAL(10,2) NOT NULL,
+    updatedAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB;
+
+CREATE TABLE RateHistory (
+    id VARCHAR(191) PRIMARY KEY,
+    metal ENUM('GOLD', 'SILVER') NOT NULL,
+    purity VARCHAR(50) NOT NULL,
+    rate DECIMAL(10,2) NOT NULL,
+    createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB;
+
+-- 5. MARKETING & DISCOUNTS
+CREATE TABLE Coupon (
+    id VARCHAR(191) PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    discountType ENUM('PERCENTAGE', 'FIXED') NOT NULL,
+    value DECIMAL(10,2) NOT NULL,
+    minOrderAmount DECIMAL(12,2) DEFAULT 0,
+    expiryDate DATETIME(3) NOT NULL,
+    isActive BOOLEAN DEFAULT TRUE
+) ENGINE=InnoDB;
+
+CREATE TABLE Banner (
+    id VARCHAR(191) PRIMARY KEY,
+    title VARCHAR(255) NULL,
+    imageUrl TEXT NOT NULL,
+    linkUrl TEXT NULL,
+    isActive BOOLEAN DEFAULT TRUE,
+    displayOrder INT DEFAULT 0
+) ENGINE=InnoDB;
+
+-- 6. SHOPPING CORE (Cart, Wishlist, Orders)
+CREATE TABLE Cart (
+    id VARCHAR(191) PRIMARY KEY,
+    userId VARCHAR(191) NOT NULL UNIQUE,
+    CONSTRAINT FK_CartUser FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE CartItem (
+    id VARCHAR(191) PRIMARY KEY,
+    cartId VARCHAR(191) NOT NULL,
+    productId VARCHAR(191) NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    CONSTRAINT FK_ItemCart FOREIGN KEY (cartId) REFERENCES Cart(id) ON DELETE CASCADE,
+    CONSTRAINT FK_ItemProduct FOREIGN KEY (productId) REFERENCES Product(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE Wishlist (
+    id VARCHAR(191) PRIMARY KEY,
+    userId VARCHAR(191) NOT NULL UNIQUE,
+    CONSTRAINT FK_WishUser FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE WishlistItem (
+    id VARCHAR(191) PRIMARY KEY,
+    wishlistId VARCHAR(191) NOT NULL,
+    productId VARCHAR(191) NOT NULL,
+    CONSTRAINT FK_Wishlist FOREIGN KEY (wishlistId) REFERENCES Wishlist(id) ON DELETE CASCADE,
+    CONSTRAINT FK_WishProduct FOREIGN KEY (productId) REFERENCES Product(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE `Order` (
+    id VARCHAR(191) PRIMARY KEY,
+    orderNumber VARCHAR(191) NOT NULL UNIQUE,
+    userId VARCHAR(191) NOT NULL,
+    totalAmount DECIMAL(12,2) NOT NULL,
+    status ENUM('CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED') DEFAULT 'CONFIRMED',
+    paymentStatus ENUM('PENDING', 'PAID', 'FAILED') DEFAULT 'PENDING',
+    address JSON NOT NULL, -- Snapshots name, phone, full address
+    createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    CONSTRAINT FK_OrderUser FOREIGN KEY (userId) REFERENCES User(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE OrderItem (
+    id VARCHAR(191) PRIMARY KEY,
+    orderId VARCHAR(191) NOT NULL,
+    productId VARCHAR(191) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(12,2) NOT NULL, -- Snapshot of price at purchase
+    CONSTRAINT FK_OrderItemOrder FOREIGN KEY (orderId) REFERENCES `Order`(id),
+    CONSTRAINT FK_OrderItemProduct FOREIGN KEY (productId) REFERENCES Product(id)
+) ENGINE=InnoDB;
+
+-- 7. ENGAGEMENT
+CREATE TABLE Appointment (
+    id VARCHAR(191) PRIMARY KEY,
+    userId VARCHAR(191) NOT NULL,
+    date DATETIME(3) NOT NULL,
+    type ENUM('BRIDAL', 'CUSTOM', 'SHOPPING') NOT NULL,
+    status ENUM('PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED') DEFAULT 'PENDING',
+    notes TEXT NULL,
+    createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    CONSTRAINT FK_ApptUser FOREIGN KEY (userId) REFERENCES User(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE Review (
+    id VARCHAR(191) PRIMARY KEY,
+    rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT NULL,
+    userId VARCHAR(191) NOT NULL,
+    productId VARCHAR(191) NOT NULL,
+    createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    CONSTRAINT FK_ReviewUser FOREIGN KEY (userId) REFERENCES User(id),
+    CONSTRAINT FK_ReviewProduct FOREIGN KEY (productId) REFERENCES Product(id)
+) ENGINE=InnoDB;
+
+-- 8. SYSTEM SETTINGS
+CREATE TABLE Settings (
+    id VARCHAR(191) PRIMARY KEY,
+    storeName VARCHAR(255) DEFAULT 'Baikunthh Jewellers',
+    contactEmail VARCHAR(255),
+    contactPhone VARCHAR(50),
+    whatsappNumber VARCHAR(50),
+    instagramLink VARCHAR(255),
+    gstPercentage DECIMAL(5,2) DEFAULT 3.00,
+    address TEXT
+) ENGINE=InnoDB;
+
+-- INITIAL SEED FOR METAL RATES
+INSERT INTO MetalRate (id, metal, purity, rate) VALUES 
+('rate_1', 'GOLD', '24K', 7500.00),
+('rate_2', 'GOLD', '22K', 6950.00),
+('rate_3', 'GOLD', '18K', 5700.00),
+('rate_4', 'SILVER', '925', 95.00);
+
+-- INITIAL SEED FOR SETTINGS
+INSERT INTO Settings (id, contactEmail, whatsappNumber, instagramLink) VALUES 
+('settings_main', 'care@baikunthh.com', '+91XXXXXXXXXX', 'https://www.instagram.com/devanshabhushan/');
