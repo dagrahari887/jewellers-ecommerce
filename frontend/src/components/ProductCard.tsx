@@ -30,7 +30,6 @@ export const ProductCard = ({ product, view = 'grid' }: ProductCardProps) => {
 
   const inWishlist = isInWishlist(product.id);
   const image = product.images?.[0]?.url || '';
-  const tag = Array.isArray(product.tags) ? product.tags[0] : undefined;
   const isOutOfStock = product.stock === 0;
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -83,7 +82,7 @@ export const ProductCard = ({ product, view = 'grid' }: ProductCardProps) => {
           <p className="font-medium text-bj-charcoal mt-2">₹{Number(product.price).toLocaleString('en-IN')}</p>
         </div>
         <div className="flex flex-col items-end gap-2">
-          <button type="button" onClick={handleWishlist} className={`p-1.5 rounded-full transition-colors ${inWishlist ? 'text-bj-gold' : 'text-gray-400 hover:text-bj-gold'}`}>
+          <button type="button" onClick={handleWishlist} aria-label={inWishlist ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`} aria-pressed={inWishlist} className={`p-2 rounded-full transition-colors ${inWishlist ? 'text-bj-gold' : 'text-gray-500 hover:text-bj-gold'}`}>
             <Heart size={16} fill={inWishlist ? 'currentColor' : 'none'} />
           </button>
           <button type="button" onClick={handleAddToCart} disabled={isOutOfStock} className="btn-gold text-xs px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed">
@@ -118,17 +117,15 @@ export const ProductCard = ({ product, view = 'grid' }: ProductCardProps) => {
           </div>
         )}
 
-        {/* Tag badge */}
-        {tag && !isOutOfStock && (
-          <span className="absolute top-3 left-3 badge-gold">{tag}</span>
-        )}
 
         {/* Hover actions */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-all duration-300" />
-        <div className="absolute bottom-3 left-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+        <div className="absolute bottom-3 left-3 right-3 flex gap-2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0 [@media(hover:none)]:opacity-100 [@media(hover:none)]:translate-y-0 transition-all duration-300">
           <button
             type="button"
             onClick={handleWishlist}
+            aria-label={inWishlist ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
+            aria-pressed={inWishlist}
             className={`flex-none w-9 h-9 bg-white shadow-sm flex items-center justify-center transition-colors ${inWishlist ? 'text-bj-gold' : 'text-bj-charcoal hover:text-bj-gold'}`}
           >
             <Heart size={14} fill={inWishlist ? 'currentColor' : 'none'} />
@@ -137,7 +134,7 @@ export const ProductCard = ({ product, view = 'grid' }: ProductCardProps) => {
             type="button"
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className="flex-1 bg-bj-charcoal text-white text-[9px] uppercase tracking-[0.2em] py-2.5 hover:bg-bj-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
+            className="flex-1 bg-bj-charcoal text-white text-[9px] uppercase tracking-[0.2em] py-2.5 hover:bg-bj-gold-deep transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
           >
             <ShoppingBag size={12} />
             {isOutOfStock ? 'Sold Out' : 'Add to Bag'}

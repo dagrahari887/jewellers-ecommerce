@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChevronRight, Heart, Share2, ShieldCheck, Ruler, Truck, RotateCcw, Star } from 'lucide-react';
+import { ChevronRight, Heart, Share2, ShieldCheck, Truck, RotateCcw, Star } from 'lucide-react';
 import { API_URL, useStore, apiRequest } from '../store/useStore';
 import { ImageGallery } from '../components/ImageGallery';
 import { PriceBreakdown } from '../components/PriceBreakdown';
@@ -150,11 +150,11 @@ export const ProductDetails = () => {
   };
 
   return (
-    <div className="bg-bj-ivory min-h-screen pt-24 pb-20">
+    <div className="pt-[calc(var(--header-h)+1rem)] pb-28 md:pb-20">
 
       {/* Breadcrumbs */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-        <nav className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-400">
+      <div className="page-container py-4">
+        <nav className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-500">
           <Link to="/" className="hover:text-bj-gold transition-colors">Home</Link>
           <ChevronRight size={10} />
           <Link to="/shop" className="hover:text-bj-gold transition-colors">Jewellery</Link>
@@ -172,11 +172,11 @@ export const ProductDetails = () => {
       </div>
 
       {/* Main Product Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-20">
+      <div className="page-container py-4 md:py-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-20">
 
           {/* Images */}
-          <div className="md:sticky md:top-24 self-start">
+          <div className="md:sticky md:top-[calc(var(--header-h)+1.5rem)] self-start">
             <ImageGallery images={product.images || []} alt={product.name} />
           </div>
 
@@ -199,62 +199,29 @@ export const ProductDetails = () => {
 
             {/* Reviews Summary */}
             {product.reviews && product.reviews.length > 0 && (
-              <div
-                className="flex items-center gap-2 mb-5 cursor-pointer group"
+              <button
+                type="button"
+                className="flex items-center gap-2 mb-5 group self-start"
                 onClick={() => document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 <StarRating rating={product.avgRating || 5} />
-                <span className="text-xs text-gray-400 group-hover:text-bj-gold transition-colors underline underline-offset-2">
+                <span className="text-xs text-gray-500 group-hover:text-bj-gold transition-colors underline underline-offset-2">
                   {product.reviews.length} {product.reviews.length === 1 ? 'review' : 'reviews'}
                 </span>
-              </div>
+              </button>
             )}
 
             {/* Price */}
             <div className="mb-6">
-              <p className="text-3xl font-serif text-bj-charcoal">
+              <p className="text-4xl md:text-[2.75rem] leading-none font-serif text-bj-charcoal">
                 ₹{Number(product.price).toLocaleString('en-IN')}
               </p>
-              <p className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Inclusive of GST · Free Insured Shipping</p>
+              <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-2">Inclusive of GST</p>
             </div>
 
             {/* Description */}
             <div className="prose prose-sm text-gray-600 mb-8 font-light leading-relaxed border-b border-gray-100 pb-8">
               <p>{product.description}</p>
-            </div>
-
-            {/* Specs Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-5 mb-8 pb-8 border-b border-gray-100">
-              {product.sku && (
-                <div>
-                  <span className="block text-[9px] uppercase tracking-widest text-gray-400 mb-1">SKU</span>
-                  <span className="text-sm font-medium text-bj-charcoal">{product.sku}</span>
-                </div>
-              )}
-              {product.metalType && (
-                <div>
-                  <span className="block text-[9px] uppercase tracking-widest text-gray-400 mb-1">Metal</span>
-                  <span className="text-sm font-medium text-bj-charcoal">{product.metalType} {product.purity}</span>
-                </div>
-              )}
-              {product.grossWeight && (
-                <div>
-                  <span className="block text-[9px] uppercase tracking-widest text-gray-400 mb-1">Gross Weight</span>
-                  <span className="text-sm font-medium text-bj-charcoal">{Number(product.grossWeight).toFixed(2)}g</span>
-                </div>
-              )}
-              {product.netWeight && (
-                <div>
-                  <span className="block text-[9px] uppercase tracking-widest text-gray-400 mb-1">Net Weight</span>
-                  <span className="text-sm font-medium text-bj-charcoal">{Number(product.netWeight).toFixed(2)}g</span>
-                </div>
-              )}
-              <div>
-                <span className="block text-[9px] uppercase tracking-widest text-gray-400 mb-1">Availability</span>
-                <span className={`text-sm font-medium ${isOutOfStock ? 'text-red-500' : 'text-emerald-600'}`}>
-                  {isOutOfStock ? 'Out of Stock' : `In Stock (${product.stock} left)`}
-                </span>
-              </div>
             </div>
 
             {/* ===== SIZE SELECTOR ===== */}
@@ -263,22 +230,24 @@ export const ProductDetails = () => {
                 <div className="flex items-center justify-between mb-3">
                   <label className="text-[10px] uppercase tracking-[0.25em] text-bj-charcoal font-semibold">
                     {sizeType === 'ring' ? 'Ring Size' : sizeType === 'bangle' ? 'Bangle Size' : 'Size'}
-                    {selectedSize && <span className="ml-2 text-bj-gold">— {selectedSize}</span>}
+                    {selectedSize && <span className="ml-2 text-bj-gold-deep">{selectedSize}</span>}
                   </label>
                   <button
                     onClick={() => setShowSizeGuide(!showSizeGuide)}
+                    aria-expanded={showSizeGuide}
                     className="text-[9px] uppercase tracking-widest text-gray-500 hover:text-bj-gold underline underline-offset-2 transition-colors"
                   >
                     Size Guide
                   </button>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap sm:overflow-visible">
                   {sizeOptions.map(s => (
                     <button
                       key={s}
                       onClick={() => setSelectedSize(s === selectedSize ? '' : s)}
-                      className={`size-option ${selectedSize === s ? 'selected' : ''}`}
+                      aria-pressed={selectedSize === s}
+                      className={`size-option shrink-0 ${selectedSize === s ? 'selected' : ''}`}
                       style={{ minWidth: sizeType === 'bangle' ? '48px' : '40px' }}
                     >
                       {s}
@@ -292,7 +261,7 @@ export const ProductDetails = () => {
                       <><strong className="text-bj-charcoal">Ring Size Guide:</strong> Measure the inner circumference of an existing ring in mm. Size 14 ≈ 54mm circumference. For assistance, visit our showroom or contact our concierge.</>
                     )}
                     {sizeType === 'bracelet' && (
-                      <><strong className="text-bj-charcoal">Bracelet Size Guide:</strong> XS = 15cm, S = 16cm, M = 17cm, L = 18cm, XL = 19cm wrist circumference. Add 1–2cm for a comfortable fit.</>
+                      <><strong className="text-bj-charcoal">Bracelet Size Guide:</strong> XS = 15cm, S = 16cm, M = 17cm, L = 18cm, XL = 19cm wrist circumference. Add 1-2cm for a comfortable fit.</>
                     )}
                     {sizeType === 'bangle' && (
                       <><strong className="text-bj-charcoal">Bangle Size Guide:</strong> Measure the widest part of your hand (knuckles) in inches. 2/2 = 2.2", 2/4 = 2.4", etc.</>
@@ -312,29 +281,66 @@ export const ProductDetails = () => {
                 <button
                   onClick={handleAddToCart}
                   disabled={isOutOfStock}
-                  className="flex-1 btn-gold py-4 text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-bj-gold disabled:hover:shadow-none disabled:hover:translate-y-0"
+                  className="flex-1 btn-gold px-4 py-4 text-sm whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-bj-gold-deep disabled:hover:shadow-none disabled:hover:translate-y-0"
                 >
-                  {isOutOfStock ? 'Sold Out' : 'Add to Shopping Bag'}
+                  {isOutOfStock ? 'Sold Out' : 'Add to Bag'}
                 </button>
                 <button
                   onClick={handleWishlist}
-                  className={`w-14 h-14 border-2 flex items-center justify-center transition-all ${inWishlist ? 'border-bj-gold bg-bj-gold/8 text-bj-gold' : 'border-gray-200 text-gray-400 hover:border-bj-gold hover:text-bj-gold'}`}
+                  className={`w-14 h-14 border-2 flex items-center justify-center transition-all ${inWishlist ? 'border-bj-gold bg-bj-gold/[0.08] text-bj-gold' : 'border-gray-200 text-gray-500 hover:border-bj-gold hover:text-bj-gold'}`}
                   title={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+                  aria-label={inWishlist ? 'Remove from wishlist' : 'Save to wishlist'}
+                  aria-pressed={inWishlist}
                 >
                   <Heart size={19} fill={inWishlist ? 'currentColor' : 'none'} />
                 </button>
                 <button
                   onClick={handleShare}
-                  className="w-14 h-14 border-2 border-gray-200 text-gray-400 hover:border-bj-gold hover:text-bj-gold flex items-center justify-center transition-all"
+                  className="w-14 h-14 border-2 border-gray-200 text-gray-500 hover:border-bj-gold hover:text-bj-gold flex items-center justify-center transition-all"
                   title="Share"
+                  aria-label="Share this piece"
                 >
                   <Share2 size={19} />
                 </button>
               </div>
 
               <Link to="/appointments" className="btn-outline w-full py-3.5 text-center">
-                Book a Private Viewing
+                Book an Appointment
               </Link>
+            </div>
+
+            {/* Specs Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-5 mb-8 pb-8 border-b border-gray-100">
+              {product.sku && (
+                <div>
+                  <span className="block text-[9px] uppercase tracking-widest text-gray-500 mb-1">SKU</span>
+                  <span className="text-sm font-medium text-bj-charcoal">{product.sku}</span>
+                </div>
+              )}
+              {product.metalType && (
+                <div>
+                  <span className="block text-[9px] uppercase tracking-widest text-gray-500 mb-1">Metal</span>
+                  <span className="text-sm font-medium text-bj-charcoal">{product.metalType} {product.purity}</span>
+                </div>
+              )}
+              {product.grossWeight && (
+                <div>
+                  <span className="block text-[9px] uppercase tracking-widest text-gray-500 mb-1">Gross Weight</span>
+                  <span className="text-sm font-medium text-bj-charcoal">{Number(product.grossWeight).toFixed(2)}g</span>
+                </div>
+              )}
+              {product.netWeight && (
+                <div>
+                  <span className="block text-[9px] uppercase tracking-widest text-gray-500 mb-1">Net Weight</span>
+                  <span className="text-sm font-medium text-bj-charcoal">{Number(product.netWeight).toFixed(2)}g</span>
+                </div>
+              )}
+              <div>
+                <span className="block text-[9px] uppercase tracking-widest text-gray-500 mb-1">Availability</span>
+                <span className={`text-sm font-medium ${isOutOfStock ? 'text-red-500' : 'text-emerald-600'}`}>
+                  {isOutOfStock ? 'Out of Stock' : `In Stock (${product.stock} left)`}
+                </span>
+              </div>
             </div>
 
             {/* Price Breakdown */}
@@ -352,12 +358,11 @@ export const ProductDetails = () => {
             </div>
 
             {/* Trust Badges */}
-            <div className="grid grid-cols-2 gap-3 pt-6 border-t border-gray-100">
+            <div className="grid sm:grid-cols-3 gap-3 pt-6 border-t border-gray-100">
               {[
-                { icon: ShieldCheck, text: 'BIS Hallmarked' },
-                { icon: RotateCcw, text: 'Lifetime Buyback' },
-                { icon: Truck, text: 'Insured Shipping' },
-                { icon: Ruler, text: 'Expert Certified' },
+                { icon: ShieldCheck, text: 'Authorized Hallmark Centre' },
+                { icon: RotateCcw, text: 'Lifetime Buyback Guarantee' },
+                { icon: Truck, text: 'Insured bridal shipping' },
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="flex items-center gap-2.5 text-xs text-gray-500">
                   <Icon size={16} className="text-bj-gold shrink-0" />
@@ -372,15 +377,14 @@ export const ProductDetails = () => {
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-20 pb-4">
-          <div className="text-center mb-12">
-            <p className="section-eyebrow">You May Also Like</p>
+        <div className="page-container pt-20 md:pt-24 pb-4">
+          <div className="text-center mb-10 md:mb-12">
             <h2 className="font-serif text-3xl text-bj-charcoal">More from {product.category?.name}</h2>
             <div className="gold-rule" />
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
+          <div className="flex flex-wrap justify-center gap-x-4 md:gap-x-6 gap-y-10">
             {relatedProducts.map(p => (
-              <Link key={p.id} to={`/product/${p.slug}`} className="group block">
+              <Link key={p.id} to={`/product/${p.slug}`} className="group block w-[calc(50%-0.5rem)] md:w-[calc(25%-1.125rem)]">
                 <div className="relative aspect-[4/5] overflow-hidden bg-bj-cream mb-4">
                   {p.images?.[0]?.url ? (
                     <img src={p.images[0].url} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
@@ -398,12 +402,10 @@ export const ProductDetails = () => {
       )}
 
       {/* Reviews Section */}
-      <div id="reviews" className="max-w-4xl mx-auto px-4 sm:px-6 pt-20 pb-8">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-10">
-          <div>
-            <p className="section-eyebrow">Client Feedback</p>
-            <h2 className="font-serif text-3xl text-bj-charcoal">Reviews</h2>
-          </div>
+      <div id="reviews" className="page-container pt-20 md:pt-24 pb-8">
+        <div className="max-w-3xl">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+          <h2 className="font-serif text-3xl text-bj-charcoal">Reviews</h2>
           {user ? (
             <button onClick={() => setShowReviewForm(!showReviewForm)} className="btn-gold text-xs px-6 py-2.5">
               {showReviewForm ? 'Cancel' : '+ Write a Review'}
@@ -421,14 +423,16 @@ export const ProductDetails = () => {
             <h3 className="font-serif text-2xl mb-6">Share your experience</h3>
             <div className="space-y-5">
               <div>
-                <label className="label-luxury">Your Rating</label>
-                <div className="flex gap-1.5 mt-1">
+                <p id="review-rating-label" className="label-luxury">Your Rating</p>
+                <div className="flex gap-1.5 mt-1" role="group" aria-labelledby="review-rating-label">
                   {[1, 2, 3, 4, 5].map(star => (
                     <button
                       key={star}
                       type="button"
                       onClick={() => setReviewForm({ ...reviewForm, rating: star })}
-                      className="focus:outline-none transition-transform hover:scale-110"
+                      aria-label={`${star} star${star > 1 ? 's' : ''}`}
+                      aria-pressed={reviewForm.rating === star}
+                      className="transition-transform hover:scale-110"
                     >
                       <Star
                         size={28}
@@ -438,8 +442,8 @@ export const ProductDetails = () => {
                   ))}
                 </div>
               </div>
-              <div>
-                <label className="label-luxury">Review Title</label>
+              <label className="block">
+                <span className="label-luxury">Review Title</span>
                 <input
                   required
                   type="text"
@@ -448,9 +452,9 @@ export const ProductDetails = () => {
                   onChange={e => setReviewForm({ ...reviewForm, title: e.target.value })}
                   placeholder="Give your review a short title"
                 />
-              </div>
-              <div>
-                <label className="label-luxury">Your Comments</label>
+              </label>
+              <label className="block">
+                <span className="label-luxury">Your Comments</span>
                 <textarea
                   required
                   className="input-luxury h-28 resize-none"
@@ -458,7 +462,7 @@ export const ProductDetails = () => {
                   onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })}
                   placeholder="Tell us what you liked about this piece..."
                 />
-              </div>
+              </label>
               <button type="submit" disabled={submittingReview} className="btn-gold py-3 px-8">
                 {submittingReview ? 'Submitting...' : 'Submit Review'}
               </button>
@@ -474,10 +478,10 @@ export const ProductDetails = () => {
               <div className="text-center">
                 <p className="font-serif text-4xl text-bj-charcoal">{product.avgRating?.toFixed(1)}</p>
                 <StarRating rating={product.avgRating || 5} size={16} className="justify-center mt-1" />
-                <p className="text-xs text-gray-400 mt-1">{product.reviews.length} reviews</p>
+                <p className="text-xs text-gray-500 mt-1">{product.reviews.length} reviews</p>
               </div>
               <div className="flex-1 text-sm text-gray-500">
-                Verified customer reviews for {product.name}. All reviews are from confirmed purchasers.
+                What customers say about {product.name}.
               </div>
             </div>
 
@@ -489,10 +493,10 @@ export const ProductDetails = () => {
                       <StarRating rating={review.rating} size={13} />
                       <h4 className="font-medium text-bj-charcoal mt-1.5">{review.title}</h4>
                     </div>
-                    <span className="text-[10px] text-gray-400">{new Date(review.createdAt).toLocaleDateString('en-IN')}</span>
+                    <span className="text-[10px] text-gray-500">{new Date(review.createdAt).toLocaleDateString('en-IN')}</span>
                   </div>
                   <p className="text-sm text-gray-600 mb-3 leading-relaxed">{review.comment}</p>
-                  <p className="text-[10px] text-bj-stone uppercase tracking-wider font-medium">— {review.user.name}</p>
+                  <p className="text-[10px] text-bj-stone uppercase tracking-wider font-medium">{review.user.name}</p>
                 </div>
               ))}
             </div>
@@ -507,6 +511,19 @@ export const ProductDetails = () => {
             )}
           </div>
         )}
+        </div>
+      </div>
+
+      {/* Mobile buy bar: price and the primary action never scroll away */}
+      <div className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] px-4 py-3 flex items-center gap-4">
+        <p className="font-serif text-2xl text-bj-charcoal shrink-0">₹{Number(product.price).toLocaleString('en-IN')}</p>
+        <button
+          onClick={handleAddToCart}
+          disabled={isOutOfStock}
+          className="btn-gold flex-1 px-4 py-3.5 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isOutOfStock ? 'Sold Out' : requiresSize && !selectedSize ? 'Select a Size' : 'Add to Bag'}
+        </button>
       </div>
 
     </div>

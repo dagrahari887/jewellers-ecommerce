@@ -85,30 +85,29 @@ export const Appointments = () => {
   };
 
   return (
-    <div className="bg-bj-ivory min-h-screen pt-28 pb-20">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+    <div className="page-shell">
+      <div className="page-container">
         
         {/* Header */}
-        <div className="text-center mb-12 fade-in">
-          <p className="section-eyebrow">Personalized Service</p>
-          <h1 className="font-serif text-4xl md:text-5xl text-bj-charcoal mb-4">Book an Appointment</h1>
-          <p className="text-gray-500 max-w-2xl mx-auto text-sm">
-            Experience our exclusive jewellery collections with a dedicated consultant in our private viewing rooms.
+        <div className="mb-8 md:mb-10 fade-in">
+          <h1 className="page-title mb-3">Book an Appointment</h1>
+          <p className="text-gray-500 max-w-2xl text-sm leading-relaxed">
+            Meet a consultant at our showroom for bridal jewellery, a custom design or a closer look at the collection.
           </p>
         </div>
 
         {/* Tabs */}
         {user && (
-          <div className="flex justify-center mb-8 border-b border-gray-200">
+          <div className="flex mb-8 border-b border-gray-200">
             <button 
               onClick={() => setActiveTab('book')}
-              className={`px-8 py-4 text-xs uppercase tracking-widest transition-colors ${activeTab === 'book' ? 'text-bj-gold border-b-2 border-bj-gold font-medium' : 'text-gray-500 hover:text-bj-charcoal'}`}
+              className={`px-5 sm:px-8 py-4 -mb-px text-xs uppercase tracking-widest transition-colors ${activeTab === 'book' ? 'text-bj-gold border-b-2 border-bj-gold font-medium' : 'text-gray-500 hover:text-bj-charcoal'}`}
             >
               Book New
             </button>
             <button 
               onClick={() => setActiveTab('history')}
-              className={`px-8 py-4 text-xs uppercase tracking-widest transition-colors ${activeTab === 'history' ? 'text-bj-gold border-b-2 border-bj-gold font-medium' : 'text-gray-500 hover:text-bj-charcoal'}`}
+              className={`px-5 sm:px-8 py-4 -mb-px text-xs uppercase tracking-widest transition-colors ${activeTab === 'history' ? 'text-bj-gold border-b-2 border-bj-gold font-medium' : 'text-gray-500 hover:text-bj-charcoal'}`}
             >
               My Appointments
             </button>
@@ -117,30 +116,32 @@ export const Appointments = () => {
 
         {/* Content */}
         {activeTab === 'book' ? (
-          <div className="flex flex-col md:flex-row gap-10">
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
             {/* Form */}
             <div className="flex-1 bg-white p-6 md:p-10 shadow-sm border border-gray-100">
               <h2 className="font-serif text-2xl text-bj-charcoal mb-8">Appointment Details</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 
                 <div>
-                  <label className="label-luxury">Appointment Type *</label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <p id="appt-type-label" className="label-luxury">Appointment Type *</p>
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4" role="group" aria-labelledby="appt-type-label">
                     {['SHOPPING', 'BRIDAL', 'CUSTOM'].map(t => (
-                      <div 
+                      <button
+                        type="button"
                         key={t}
                         onClick={() => setType(t)}
-                        className={`p-4 border text-center cursor-pointer transition-colors ${type === t ? 'border-bj-gold bg-bj-gold/5 text-bj-gold' : 'border-gray-200 text-gray-500 hover:border-bj-gold/50'}`}
+                        aria-pressed={type === t}
+                        className={`px-2 py-4 border text-center transition-colors ${type === t ? 'border-bj-gold bg-bj-gold/5 text-bj-gold-dark' : 'border-gray-200 text-gray-500 hover:border-bj-gold/50 hover:text-bj-charcoal'}`}
                       >
                         <span className="text-xs font-medium uppercase tracking-widest">{t}</span>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="label-luxury flex items-center gap-2"><Calendar size={14}/> Date *</label>
+                  <label className="block">
+                    <span className="label-luxury flex items-center gap-2"><Calendar size={14}/> Date *</span>
                     <input 
                       type="date" 
                       required 
@@ -149,9 +150,9 @@ export const Appointments = () => {
                       value={date}
                       onChange={e => setDate(e.target.value)}
                     />
-                  </div>
-                  <div>
-                    <label className="label-luxury flex items-center gap-2"><Clock size={14}/> Time *</label>
+                  </label>
+                  <label className="block">
+                    <span className="label-luxury flex items-center gap-2"><Clock size={14}/> Time *</span>
                     <input 
                       type="time" 
                       required 
@@ -159,18 +160,18 @@ export const Appointments = () => {
                       value={time}
                       onChange={e => setTime(e.target.value)}
                     />
-                  </div>
+                  </label>
                 </div>
 
-                <div>
-                  <label className="label-luxury flex items-center gap-2"><FileText size={14}/> Special Requests / Notes</label>
+                <label className="block">
+                  <span className="label-luxury flex items-center gap-2"><FileText size={14}/> Special Requests / Notes</span>
                   <textarea 
                     className="input-luxury w-full min-h-[120px] resize-y" 
                     placeholder="Tell us if you're looking for something specific (e.g., engagement rings, specific collections)..."
                     value={notes}
                     onChange={e => setNotes(e.target.value)}
                   ></textarea>
-                </div>
+                </label>
 
                 <button 
                   type="submit" 
@@ -179,41 +180,30 @@ export const Appointments = () => {
                 >
                   {loading ? 'Submitting...' : 'Request Appointment'}
                 </button>
-                <p className="text-[10px] text-gray-400 text-center uppercase tracking-widest mt-4">
+                <p className="text-[10px] text-gray-500 text-center uppercase tracking-widest mt-4">
                   A consultant will contact you to confirm the appointment.
                 </p>
               </form>
             </div>
 
             {/* Info Sidebar */}
-            <div className="w-full md:w-80 shrink-0 space-y-6">
+            <div className="w-full lg:w-80 shrink-0 space-y-6">
               <div className="bg-bj-charcoal text-white p-8">
                 <h3 className="font-serif text-xl mb-6">Boutique Information</h3>
                 
                 <div className="space-y-4 text-sm text-gray-300 font-light">
                   <div className="flex items-start gap-3">
                     <MapPin size={18} className="text-bj-gold shrink-0 mt-0.5" />
-                    <p>123 Luxury Avenue,<br/>High Street District,<br/>Mumbai, 400001</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Clock size={18} className="text-bj-gold shrink-0 mt-0.5" />
-                    <p>Mon - Sat: 11:00 AM - 8:00 PM<br/>Sunday: By appointment only</p>
+                    <p>Premium Jewellery Showroom<br/>Authorized Hallmark Centre</p>
                   </div>
                   <div className="flex items-start gap-3">
                     <User size={18} className="text-bj-gold shrink-0 mt-0.5" />
-                    <p>+91 98765 43210<br/>concierge@baikunthh.com</p>
+                    <p>
+                      <a href="tel:+917068580500" className="hover:text-bj-gold transition-colors">+91 7068580500</a><br/>
+                      <a href="mailto:care@baikunthh.com" className="hover:text-bj-gold transition-colors">care@baikunthh.com</a>
+                    </p>
                   </div>
                 </div>
-              </div>
-              
-              <div className="bg-white p-6 border border-gray-100 shadow-sm">
-                <h4 className="font-serif text-lg mb-2 text-bj-charcoal">Why Book?</h4>
-                <ul className="text-sm text-gray-600 space-y-2 list-disc pl-4 marker:text-bj-gold">
-                  <li>Dedicated consultant for personalized advice</li>
-                  <li>Access to exclusive viewing rooms</li>
-                  <li>Pre-curated selection based on your preferences</li>
-                  <li>No waiting time during peak hours</li>
-                </ul>
               </div>
             </div>
           </div>

@@ -17,7 +17,7 @@ export const PriceBreakdown = ({
   
   if (priceType === 'FIXED' || fixedPrice) {
     return (
-      <div className="bg-bj-ivory p-5 border border-gray-100">
+      <div className="bg-bj-ivory p-5 border border-gray-100 tabular-nums">
         <h4 className="text-[10px] uppercase tracking-widest text-bj-stone mb-4 font-medium flex items-center gap-1.5">
           <Info size={12} /> Pricing Details
         </h4>
@@ -36,14 +36,14 @@ export const PriceBreakdown = ({
   const metalValue = totalPrice - Number(makingCharge || 0) - Number(stoneCharge || 0);
 
   return (
-    <div className="bg-bj-ivory p-5 border border-gray-100">
+    <div className="bg-bj-ivory p-5 border border-gray-100 tabular-nums">
       <h4 className="text-[10px] uppercase tracking-widest text-bj-stone mb-4 font-medium flex items-center gap-1.5">
         <Info size={12} /> Transparent Pricing
       </h4>
       
       <div className="space-y-2.5">
         <div className="flex justify-between items-center text-sm">
-          <span className="text-gray-600">Gold Value ({netWeight}g)</span>
+          <span className="text-gray-600">{metalType === 'SILVER' ? 'Silver' : metalType === 'PLATINUM' ? 'Platinum' : 'Gold'} value ({purity ? `${purity}, ` : ''}{netWeight}g)</span>
           <span className="font-medium">₹{metalValue.toLocaleString('en-IN')}</span>
         </div>
         
@@ -65,7 +65,7 @@ export const PriceBreakdown = ({
           <span className="text-sm font-medium text-bj-charcoal">Subtotal</span>
           <span className="text-lg font-serif">₹{totalPrice.toLocaleString('en-IN')}</span>
         </div>
-        <p className="text-[9px] text-right text-gray-400 mt-1 uppercase tracking-widest">Inclusive of 3% GST</p>
+        <p className="text-[9px] text-right text-gray-500 mt-1 uppercase tracking-widest">Inclusive of 3% GST</p>
       </div>
     </div>
   );

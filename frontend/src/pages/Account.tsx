@@ -148,11 +148,11 @@ export const Account = () => {
   };
 
   return (
-    <div className="bg-bj-ivory min-h-screen pt-28 pb-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+    <div className="page-shell">
+      <div className="page-container">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
-            <h1 className="font-serif text-3xl md:text-4xl text-bj-charcoal mb-2">My Account</h1>
+            <h1 className="page-title mb-2">My Account</h1>
             <p className="text-gray-500 text-sm">Welcome back, {user.name}</p>
           </div>
           {user.role === 'ADMIN' && (
@@ -166,30 +166,30 @@ export const Account = () => {
           
           {/* Sidebar */}
           <div className="w-full md:w-64 shrink-0">
-            <div className="bg-white border border-gray-100 shadow-sm sticky top-24">
+            <div className="flex md:block overflow-x-auto no-scrollbar border-b border-gray-200 md:border md:border-gray-100 md:bg-white md:shadow-sm md:sticky md:top-[calc(var(--header-h)+1.5rem)]">
               <button 
                 onClick={() => setActiveTab('orders')}
-                className={`w-full flex items-center gap-3 px-5 py-4 text-sm font-medium border-l-2 transition-colors ${activeTab === 'orders' ? 'border-bj-gold text-bj-gold bg-bj-gold/5' : 'border-transparent text-gray-600 hover:bg-gray-50'}`}
+                className={`shrink-0 md:w-full flex items-center gap-2 md:gap-3 px-4 md:px-5 py-3 md:py-4 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px md:mb-0 md:border-b-0 md:border-l-2 ${activeTab === 'orders' ? 'border-bj-gold text-bj-gold md:bg-bj-gold/5' : 'border-transparent text-gray-600 hover:text-bj-charcoal md:hover:bg-gray-50'}`}
               >
                 <Package size={18} /> My Orders
               </button>
               <button 
                 onClick={() => setActiveTab('profile')}
-                className={`w-full flex items-center gap-3 px-5 py-4 text-sm font-medium border-l-2 transition-colors ${activeTab === 'orders' ? '' : 'border-t border-gray-100'} ${activeTab === 'profile' ? 'border-l-bj-gold text-bj-gold bg-bj-gold/5' : 'border-l-transparent text-gray-600 hover:bg-gray-50'}`}
+                className={`shrink-0 md:w-full flex items-center gap-2 md:gap-3 px-4 md:px-5 py-3 md:py-4 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px md:mb-0 md:border-b-0 md:border-l-2 md:border-t md:border-t-gray-100 ${activeTab === 'profile' ? 'border-bj-gold text-bj-gold md:bg-bj-gold/5' : 'border-transparent text-gray-600 hover:text-bj-charcoal md:hover:bg-gray-50'}`}
               >
                 <User size={18} /> Profile Details
               </button>
               <button 
                 onClick={() => setActiveTab('addresses')}
-                className={`w-full flex items-center gap-3 px-5 py-4 text-sm font-medium border-l-2 transition-colors border-t border-gray-100 ${activeTab === 'addresses' ? 'border-l-bj-gold text-bj-gold bg-bj-gold/5' : 'border-l-transparent text-gray-600 hover:bg-gray-50'}`}
+                className={`shrink-0 md:w-full flex items-center gap-2 md:gap-3 px-4 md:px-5 py-3 md:py-4 text-sm font-medium whitespace-nowrap transition-colors border-b-2 -mb-px md:mb-0 md:border-b-0 md:border-l-2 md:border-t md:border-t-gray-100 ${activeTab === 'addresses' ? 'border-bj-gold text-bj-gold md:bg-bj-gold/5' : 'border-transparent text-gray-600 hover:text-bj-charcoal md:hover:bg-gray-50'}`}
               >
                 <MapPin size={18} /> Saved Addresses
               </button>
               
-              <div className="border-t border-gray-100 mt-4 pt-4 mb-4 px-5">
+              <div className="shrink-0 flex md:block md:border-t md:border-gray-100 md:mt-4 md:pt-4 md:mb-4 px-4 md:px-5">
                 <button 
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 py-2 text-sm font-medium text-red-600 hover:text-red-700"
+                  className="flex items-center gap-2 md:gap-3 py-3 md:py-2 text-sm font-medium text-red-600 hover:text-red-700 whitespace-nowrap"
                 >
                   <LogOut size={18} /> Sign Out
                 </button>
@@ -281,19 +281,19 @@ export const Account = () => {
                       <div className="space-y-6">
                         <div className="grid sm:grid-cols-2 gap-6">
                           <div>
-                            <label className="label-luxury">Full Name</label>
+                            <p className="label-luxury">Full Name</p>
                             <p className="font-medium">{profile.name}</p>
                           </div>
                           <div>
-                            <label className="label-luxury">Email Address</label>
+                            <p className="label-luxury">Email Address</p>
                             <p className="font-medium">{profile.email}</p>
                           </div>
                           <div>
-                            <label className="label-luxury">Phone Number</label>
+                            <p className="label-luxury">Phone Number</p>
                             <p className="font-medium">{profile.phone || 'Not provided'}</p>
                           </div>
                           <div>
-                            <label className="label-luxury">Member Since</label>
+                            <p className="label-luxury">Member Since</p>
                             <p className="font-medium">{new Date(profile.createdAt).toLocaleDateString()}</p>
                           </div>
                         </div>
@@ -306,16 +306,16 @@ export const Account = () => {
                       <form onSubmit={handleSaveProfile} className="space-y-4">
                         <div className="flex justify-between items-center mb-4">
                           <h3 className="font-medium text-sm uppercase tracking-widest text-bj-charcoal">Edit Profile</h3>
-                          <button type="button" onClick={() => setShowProfileEdit(false)} className="text-gray-400 hover:text-gray-600"><X size={20}/></button>
+                          <button type="button" onClick={() => setShowProfileEdit(false)} className="text-gray-500 hover:text-gray-600"><X size={20}/></button>
                         </div>
-                        <div>
-                          <label className="label-luxury">Full Name</label>
+                        <label className="block">
+                          <span className="label-luxury">Full Name</span>
                           <input required type="text" className="input-luxury" value={editProfileForm.name} onChange={e => setEditProfileForm({...editProfileForm, name: e.target.value})} />
-                        </div>
-                        <div>
-                          <label className="label-luxury">Phone Number</label>
+                        </label>
+                        <label className="block">
+                          <span className="label-luxury">Phone Number</span>
                           <input type="text" className="input-luxury" value={editProfileForm.phone} onChange={e => setEditProfileForm({...editProfileForm, phone: e.target.value})} />
-                        </div>
+                        </label>
                         <div className="pt-4 flex gap-3">
                           <button type="submit" disabled={savingProfile} className="btn-gold px-6">
                             {savingProfile ? 'Saving...' : 'Save Changes'}
@@ -327,16 +327,16 @@ export const Account = () => {
                       <form onSubmit={handleSavePassword} className="space-y-4">
                         <div className="flex justify-between items-center mb-4">
                           <h3 className="font-medium text-sm uppercase tracking-widest text-bj-charcoal">Change Password</h3>
-                          <button type="button" onClick={() => setShowPasswordEdit(false)} className="text-gray-400 hover:text-gray-600"><X size={20}/></button>
+                          <button type="button" onClick={() => setShowPasswordEdit(false)} className="text-gray-500 hover:text-gray-600"><X size={20}/></button>
                         </div>
-                        <div>
-                          <label className="label-luxury">Current Password</label>
+                        <label className="block">
+                          <span className="label-luxury">Current Password</span>
                           <input required type="password" minLength={6} className="input-luxury" value={passwordForm.currentPassword} onChange={e => setPasswordForm({...passwordForm, currentPassword: e.target.value})} />
-                        </div>
-                        <div>
-                          <label className="label-luxury">New Password</label>
+                        </label>
+                        <label className="block">
+                          <span className="label-luxury">New Password</span>
                           <input required type="password" minLength={6} className="input-luxury" value={passwordForm.newPassword} onChange={e => setPasswordForm({...passwordForm, newPassword: e.target.value})} />
-                        </div>
+                        </label>
                         <div className="pt-4 flex gap-3">
                           <button type="submit" disabled={savingPassword} className="btn-gold px-6">
                             {savingPassword ? 'Updating...' : 'Update Password'}
@@ -362,38 +362,38 @@ export const Account = () => {
                       <form onSubmit={handleSaveAddress} className="bg-white p-6 md:p-8 border border-gray-100 shadow-sm max-w-2xl mb-6">
                         <h3 className="text-sm font-medium mb-6 uppercase tracking-widest text-bj-charcoal">Add New Address</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                          <div>
-                            <label className="label-luxury">Label (e.g. Home, Office)</label>
+                          <label className="block">
+                            <span className="label-luxury">Label (e.g. Home, Office)</span>
                             <input required type="text" className="input-luxury" value={newAddress.label} onChange={e => setNewAddress({...newAddress, label: e.target.value})} />
-                          </div>
-                          <div>
-                            <label className="label-luxury">Full Name *</label>
+                          </label>
+                          <label className="block">
+                            <span className="label-luxury">Full Name *</span>
                             <input required type="text" className="input-luxury" value={newAddress.fullName} onChange={e => setNewAddress({...newAddress, fullName: e.target.value})} />
-                          </div>
-                          <div>
-                            <label className="label-luxury">Phone Number *</label>
+                          </label>
+                          <label className="block">
+                            <span className="label-luxury">Phone Number *</span>
                             <input required type="text" className="input-luxury" value={newAddress.phone} onChange={e => setNewAddress({...newAddress, phone: e.target.value})} />
-                          </div>
-                          <div className="sm:col-span-2">
-                            <label className="label-luxury">Address Line 1 *</label>
+                          </label>
+                          <label className="block sm:col-span-2">
+                            <span className="label-luxury">Address Line 1 *</span>
                             <input required type="text" className="input-luxury" value={newAddress.line1} onChange={e => setNewAddress({...newAddress, line1: e.target.value})} />
-                          </div>
-                          <div className="sm:col-span-2">
-                            <label className="label-luxury">Address Line 2</label>
+                          </label>
+                          <label className="block sm:col-span-2">
+                            <span className="label-luxury">Address Line 2</span>
                             <input type="text" className="input-luxury" value={newAddress.line2} onChange={e => setNewAddress({...newAddress, line2: e.target.value})} />
-                          </div>
-                          <div>
-                            <label className="label-luxury">City *</label>
+                          </label>
+                          <label className="block">
+                            <span className="label-luxury">City *</span>
                             <input required type="text" className="input-luxury" value={newAddress.city} onChange={e => setNewAddress({...newAddress, city: e.target.value})} />
-                          </div>
-                          <div>
-                            <label className="label-luxury">State *</label>
+                          </label>
+                          <label className="block">
+                            <span className="label-luxury">State *</span>
                             <input required type="text" className="input-luxury" value={newAddress.state} onChange={e => setNewAddress({...newAddress, state: e.target.value})} />
-                          </div>
-                          <div>
-                            <label className="label-luxury">Pincode *</label>
+                          </label>
+                          <label className="block">
+                            <span className="label-luxury">Pincode *</span>
                             <input required type="text" className="input-luxury" value={newAddress.pincode} onChange={e => setNewAddress({...newAddress, pincode: e.target.value})} />
-                          </div>
+                          </label>
                         </div>
                         <div className="mt-8 flex gap-3">
                           <button type="submit" disabled={savingAddress} className="btn-gold py-3 px-6">
@@ -413,7 +413,7 @@ export const Account = () => {
                       <div className="grid sm:grid-cols-2 gap-4">
                         {addresses.map((addr) => (
                           <div key={addr.id} className="bg-white p-6 border border-gray-100 shadow-sm relative hover:border-bj-gold/30 transition-colors">
-                            {addr.isDefault && <span className="absolute top-0 right-0 bg-bj-gold text-white text-[9px] uppercase tracking-widest px-2 py-1">Default</span>}
+                            {addr.isDefault && <span className="absolute top-0 right-0 bg-bj-gold-deep text-white text-[9px] uppercase tracking-widest px-2 py-1">Default</span>}
                             <span className="badge-charcoal mb-3">{addr.label}</span>
                             <p className="font-medium text-bj-charcoal mb-1">{addr.fullName}</p>
                             <p className="text-sm text-gray-600 mb-1">{addr.phone}</p>

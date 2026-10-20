@@ -52,8 +52,9 @@ export const getProducts = async (req: Request, res: Response) => {
 // GET /api/products/:slug
 export const getProductBySlug = async (req: Request, res: Response) => {
   try {
-    const product = await prisma.product.findUnique({
-      where: { slug: req.params.slug },
+    // Cart items only store the product id, so accept either
+    const product = await prisma.product.findFirst({
+      where: { OR: [{ slug: req.params.slug }, { id: req.params.slug }] },
       include: {
         category: true,
         collection: true,

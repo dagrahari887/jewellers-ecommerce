@@ -6,11 +6,13 @@ interface MetalRate {
   metal: string;
   purity: string;
   rate: number;
+  updatedAt: string;
 }
 
+// The showroom's own per-gram rates, as set in the admin panel (not a market feed).
 export const RatesTicker = () => {
   const [rates, setRates] = useState<MetalRate[]>([]);
-  
+
   useEffect(() => {
     fetch(`${API_URL}/rates`)
       .then((res) => res.json())
@@ -22,31 +24,34 @@ export const RatesTicker = () => {
 
   if (rates.length === 0) return null;
 
-  const formatRate = (metal: string, purity: string) => {
-    const rate = rates.find((r) => r.metal.toUpperCase() === metal && r.purity.toUpperCase() === purity);
-    if (!rate) return null;
-    return `₹${Number(rate.rate).toLocaleString('en-IN')}/g`;
-  };
+  const find = (metal: string, purity: string) =>
+    rates.find((r) => r.metal.toUpperCase() === metal && r.purity.toUpperCase() === purity);
 
-  const gold24 = formatRate('GOLD', '24K');
-  const gold22 = formatRate('GOLD', '22K');
-  const silver = formatRate('SILVER', '999') || formatRate('SILVER', '925');
+  const shown = [
+    { label: '24K Gold', rate: find('GOLD', '24K') },
+    { label: '22K Gold', rate: find('GOLD', '22K') },
+    { label: '18K Gold', rate: find('GOLD', '18K') },
+    { label: 'Silver', rate: find('SILVER', '999') || find('SILVER', '925') },
+  ].filter((r) => r.rate);
+
+  const updated = new Date(Math.max(...rates.map((r) => new Date(r.updatedAt).getTime())));
 
   return (
-    <div className="bg-bj-charcoal border-b border-white/10 py-3 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-[10px] uppercase tracking-widest text-bj-champagne">
-          <span className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-bj-gold animate-pulse"></span>
-            Live Market Rates:
-          </span>
-          {gold24 && <span>24K Gold: <span className="text-white font-medium">{gold24}</span></span>}
-          {gold22 && <span>22K Gold: <span className="text-white font-medium">{gold22}</span></span>}
-          {silver && <span>Silver: <span className="text-white font-medium">{silver}</span></span>}
-          <span className="hidden md:inline text-bj-gold opacity-60">•</span>
-          <span className="hidden md:inline opacity-60">Baikunthh Exclusive</span>
-        </div>
+    <section aria-label="Today's metal rates" className="border-y border-gray-200">
+      <div className="page-container py-5 flex flex-col md:flex-row md:items-center gap-3 md:gap-10">
+        <p className="text-sm text-bj-charcoal shrink-0">
+          Rates per gram
+          <span className="text-gray-500"> · updated {updated.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
+        </p>
+        <dl className="grid grid-cols-2 sm:grid-cols-4 gap-x-8 gap-y-2 md:ml-auto tabular-nums">
+          {shown.map(({ label, rate }) => (
+            <div key={label} className="flex items-baseline gap-2">
+              <dt className="text-xs text-gray-500">{label}</dt>
+              <dd className="font-serif text-xl text-bj-charcoal">₹{Number(rate!.rate).toLocaleString('en-IN')}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
-    </div>
+    </section>
   );
 };

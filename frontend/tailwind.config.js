@@ -12,6 +12,9 @@ export default {
         'bj-gold': '#C5A059',
         'bj-gold-light': '#D4AF37',
         'bj-gold-dark': '#B38F4D',
+        // Gold surfaces behind white text: deep enough for 4.5:1 (#8C703B = 4.67:1)
+        'bj-gold-deep': '#8C703B',
+        'bj-gold-deeper': '#735C30',
         'bj-gold-pale': '#F5EDD8',
         'bj-champagne': '#F7E7CE',
         'bj-cream': '#FDF8F2',
@@ -20,7 +23,7 @@ export default {
       fontFamily: {
         serif: ['Cormorant Garamond', 'Playfair Display', 'Georgia', 'serif'],
         display: ['Playfair Display', 'Georgia', 'serif'],
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Jost Variable', 'Jost', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         'xxs': ['0.625rem', { lineHeight: '1rem' }],

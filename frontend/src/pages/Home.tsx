@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ChevronDown, ShieldCheck, RotateCcw, Truck, Gem } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import { API_URL } from '../store/useStore';
 import { RatesTicker } from '../components/RatesTicker';
-import { LoadingSpinner } from '../components/LoadingSpinner';
+import { ProductCard } from '../components/ProductCard';
+import { SkeletonCard } from '../components/LoadingSpinner';
+import { PriceBreakdown } from '../components/PriceBreakdown';
+import { Reveal } from '../components/Reveal';
 
 interface Banner {
   id: string;
@@ -15,36 +18,41 @@ interface Banner {
   buttonText: string | null;
 }
 
-const trustPillars = [
-  { icon: ShieldCheck, title: 'BIS Hallmarked', desc: 'Certified purity on every piece' },
-  { icon: RotateCcw, title: 'Lifetime Buyback', desc: 'Full value guaranteed' },
-  { icon: Truck, title: 'Insured Shipping', desc: 'Complimentary on all orders' },
-  { icon: Gem, title: 'Custom Design', desc: 'Bespoke jewellery for you' },
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+// The three guarantees the store has confirmed in writing (see PRODUCT.md).
+const promises = [
+  { title: 'Authorized Hallmark Centre', body: 'Hallmarking is done by an authorised centre.' },
+  { title: 'Lifetime Buyback Guarantee', body: 'We buy back jewellery bought from us, for life.' },
+  { title: 'Insured bridal shipping', body: 'Bridal collections ship fully insured, at no charge.' },
 ];
+
+const FALLBACK_STORY =
+  'Baikunthh Jewellers crafts timeless jewellery for extraordinary moments. Every piece is handcrafted with the finest metals and stones, carrying the legacy of Indian jewellery tradition.';
 
 export const Home = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [banners, setBanners] = useState<Banner[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
+  const [story, setStory] = useState(FALLBACK_STORY);
   const [loading, setLoading] = useState(true);
+  const reduce = useReducedMotion();
 
   useEffect(() => {
-    const loadHomeData = async () => {
+    const load = async () => {
       try {
-        const [productsRes, bannersRes, catsRes] = await Promise.all([
+        const [productsRes, bannersRes, catsRes, settingsRes] = await Promise.all([
           fetch(`${API_URL}/products?featured=true`),
           fetch(`${API_URL}/banners`),
           fetch(`${API_URL}/categories`),
+          fetch(`${API_URL}/settings`),
         ]);
-
         if (productsRes.ok) setProducts(await productsRes.json());
-        if (bannersRes.ok) {
-          const b = await bannersRes.json();
-          setBanners(b.banners || []);
-        }
-        if (catsRes.ok) {
-          const c = await catsRes.json();
-          setCategories(c.categories || []);
+        if (bannersRes.ok) setBanners((await bannersRes.json()).banners || []);
+        if (catsRes.ok) setCategories((await catsRes.json()).categories || []);
+        if (settingsRes.ok) {
+          const s = (await settingsRes.json()).settings;
+          if (s?.aboutUs) setStory(s.aboutUs);
         }
       } catch (error) {
         console.error('Home data error:', error);
@@ -52,319 +60,257 @@ export const Home = () => {
         setLoading(false);
       }
     };
-
-    loadHomeData();
+    load();
   }, []);
 
-  const heroBanner = banners.length > 0 ? banners[0] : {
-    title: 'Baikunthh',
-    subtitle: 'Timeless Jewellery. Extraordinary Moments.',
-    imageUrl: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1600&q=85',
+  const hero: Banner = banners[0] ?? {
+    id: 'fallback',
+    title: 'Timeless Jewellery.',
+    subtitle: 'Extraordinary Moments',
+    imageUrl: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=1600&q=85',
     linkUrl: '/shop',
-    buttonText: 'Explore Collections'
+    buttonText: 'Shop the Collection',
   };
+  const collections = banners.slice(1, 3);
+  const cats = categories.slice(0, 5);
+  const bento = cats.length === 5;
+  const pricedPiece = products.find((p) => p.priceType === 'RATE_BASED' && p.netWeight);
+  const storyImage = cats.find((c) => c.name === 'Necklaces')?.imageUrl || banners[2]?.imageUrl;
 
-  const secondaryBanners = banners.slice(1, 3);
+  // Hero text rises line by line while the image opens
+  const rise = (i: number) => ({
+    initial: reduce ? false : { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.9, delay: 0.25 + i * 0.12, ease: EASE },
+  });
 
   return (
-    <div className="bg-bj-ivory min-h-screen">
-
-      {/* ===== HERO SECTION ===== */}
-      <section className="relative h-[92vh] md:h-screen flex items-center justify-center overflow-hidden">
-        {/* Background image */}
-        <div className="absolute inset-0">
-          <img
-            src={heroBanner.imageUrl}
-            className="w-full h-full object-cover scale-[1.04]"
-            alt={heroBanner.title || 'Baikunthh Jewellers'}
-            style={{ transform: 'scale(1.04)' }}
-          />
-        </div>
-        {/* Multi-layer overlay for depth */}
-        <div className="absolute inset-0 hero-overlay" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
-
-        {/* Hero Content */}
-        <div className="relative text-center text-white px-6 z-10 max-w-5xl mx-auto flex flex-col items-center pt-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="flex items-center gap-4 mb-8"
-          >
-            <div className="w-16 h-px bg-bj-gold/60" />
-            <p className="uppercase tracking-[0.5em] text-[9px] text-bj-champagne font-medium">
-              Fine Jewellery · Est. Heritage
-            </p>
-            <div className="w-16 h-px bg-bj-gold/60" />
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-            className="font-serif text-6xl md:text-8xl lg:text-9xl mb-6 leading-[0.9] tracking-tight drop-shadow-sm"
-          >
-            {heroBanner.title}
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7, duration: 1 }}
-            className="tracking-[0.3em] md:tracking-[0.45em] uppercase text-[10px] md:text-xs font-light text-bj-champagne/85 max-w-lg mx-auto"
-          >
-            {heroBanner.subtitle}
-          </motion.p>
+    <div>
+      {/* ===== HERO: asymmetric split; the image opens like a jewellery box ===== */}
+      <section className="pt-[var(--header-h)]">
+        <div className="page-container grid lg:grid-cols-12 gap-8 lg:gap-12 items-center py-8 md:py-12 lg:min-h-[calc(100dvh-var(--header-h))]">
+          <div className="lg:col-span-5">
+            <motion.h1
+              {...rise(0)}
+              className="font-serif font-light text-5xl md:text-6xl xl:text-7xl leading-[1.05] tracking-[-0.02em] text-bj-charcoal text-balance"
+            >
+              {hero.title}
+            </motion.h1>
+            {hero.subtitle && (
+              <motion.p {...rise(1)} className="mt-6 text-lg text-gray-600 leading-relaxed max-w-md">
+                {hero.subtitle}.
+              </motion.p>
+            )}
+            <motion.div {...rise(2)} className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
+              <Link to={hero.linkUrl || '/shop'} className="btn-gold active:scale-[0.98]">
+                {hero.buttonText || 'Shop the Collection'}
+              </Link>
+              <Link
+                to="/appointments"
+                className="group inline-flex items-center gap-2 text-sm text-bj-charcoal border-b border-bj-charcoal pb-1 hover:text-bj-gold-deep hover:border-bj-gold-deep transition-colors"
+              >
+                Book an Appointment
+                <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            </motion.div>
+          </div>
 
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, duration: 0.8 }}
-            className="flex flex-col sm:flex-row items-center gap-4 mt-12"
+            className="lg:col-span-7 relative overflow-hidden bg-bj-cream aspect-[4/5] sm:aspect-[5/4] lg:aspect-auto lg:h-[calc(100dvh-var(--header-h)-5rem)] lg:max-h-[860px]"
+            initial={reduce ? false : { clipPath: 'inset(100% 0% 0% 0%)' }}
+            animate={{ clipPath: 'inset(0% 0% 0% 0%)' }}
+            transition={{ duration: 1.2, ease: EASE }}
           >
-            <Link
-              to={heroBanner.linkUrl || '/shop'}
-              className="px-12 py-4 bg-bj-gold hover:bg-bj-gold-dark text-white transition-all duration-300 uppercase tracking-[0.3em] text-[10px] font-bold shadow-luxury hover:shadow-xl hover:-translate-y-0.5"
-            >
-              {heroBanner.buttonText || 'Explore Collections'}
-            </Link>
-            <Link
-              to="/appointments"
-              className="px-10 py-4 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/25 transition-all duration-300 uppercase tracking-[0.25em] text-[10px] font-medium"
-            >
-              Book Appointment
-            </Link>
+            <motion.img
+              src={hero.imageUrl}
+              alt={hero.title || 'Baikunthh Jewellers'}
+              className="absolute inset-0 w-full h-full object-cover"
+              initial={reduce ? false : { scale: 1.12 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.8, ease: EASE }}
+            />
           </motion.div>
         </div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50"
-        >
-          <span className="text-[8px] uppercase tracking-[0.4em]">Scroll</span>
-          <ChevronDown size={16} className="animate-bounce" />
-        </motion.div>
       </section>
 
-      {/* ===== LIVE RATES TICKER ===== */}
       <RatesTicker />
 
-      {/* ===== TRUST PILLARS ===== */}
-      <section className="bg-bj-charcoal py-10">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-            {trustPillars.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="flex items-center gap-4">
-                <div className="w-10 h-10 shrink-0 rounded-full border border-bj-gold/30 flex items-center justify-center">
-                  <Icon size={17} className="text-bj-gold" />
-                </div>
-                <div>
-                  <p className="text-white text-xs font-medium">{title}</p>
-                  <p className="text-gray-500 text-[10px] mt-0.5">{desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== CATEGORIES ===== */}
-      {categories.length > 0 && (
-        <section className="py-24 max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <p className="section-eyebrow">Shop by Category</p>
-            <h2 className="section-title">Discover Our Craft</h2>
-            <div className="gold-rule" />
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5">
-            {categories.slice(0, 5).map((cat, index) => (
-              <Link
-                to={`/shop?category=${encodeURIComponent(cat.name)}`}
-                key={cat.id}
-                className="group relative aspect-[3/4] overflow-hidden bg-bj-cream"
-              >
-                {cat.imageUrl ? (
-                  <img
-                    src={cat.imageUrl}
-                    className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
-                    alt={cat.name}
-                    style={{ transitionDuration: '800ms' }}
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-bj-cream to-bj-gold-pale flex items-center justify-center">
-                    <span className="font-serif text-3xl text-bj-gold/30">BJ</span>
+      {/* ===== CATEGORIES: five-cell bento on desktop, swipe row on phones ===== */}
+      {cats.length > 0 && (
+        <section className="py-20 md:py-32 page-container">
+          <Reveal>
+            <h2 className="section-title mb-10 md:mb-14">Discover Our Craft</h2>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div
+              className={`flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar -mx-4 px-4 sm:-mx-6 sm:px-6 md:mx-0 md:px-0 md:overflow-visible md:grid md:gap-4 ${
+                bento ? 'md:grid-cols-4 md:grid-rows-2 md:h-[620px] lg:h-[720px]' : ''
+              }`}
+              style={bento ? undefined : { gridTemplateColumns: `repeat(${cats.length}, minmax(0, 1fr))` }}
+            >
+              {cats.map((cat, i) => (
+                <Link
+                  to={`/shop?category=${encodeURIComponent(cat.name)}`}
+                  key={cat.id}
+                  className={`group relative overflow-hidden bg-bj-cream shrink-0 w-[70%] sm:w-[42%] aspect-[3/4] md:w-auto snap-start ${
+                    bento ? 'md:aspect-auto' : ''
+                  } ${bento && i === 0 ? 'md:col-span-2 md:row-span-2' : ''}`}
+                >
+                  {cat.imageUrl && (
+                    <img
+                      src={cat.imageUrl}
+                      alt=""
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05]"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-bj-charcoal/70 via-bj-charcoal/10 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-5 md:p-7 text-white">
+                    <h3 className={`font-serif leading-tight ${bento && i === 0 ? 'text-3xl md:text-4xl' : 'text-2xl'}`}>
+                      {cat.name}
+                    </h3>
+                    {cat.description && <p className="mt-1 text-sm text-white/85 max-w-xs">{cat.description}</p>}
                   </div>
-                )}
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
-                {/* Label */}
-                <div className="absolute bottom-0 left-0 right-0 p-5 text-center transform translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
-                  <h3 className="text-white font-serif text-xl leading-tight">{cat.name}</h3>
-                  <p className="text-bj-gold text-[9px] uppercase tracking-[0.3em] mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    Explore →
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          </Reveal>
         </section>
       )}
 
-      {/* ===== SECONDARY BANNERS ===== */}
-      {secondaryBanners.length > 0 && (
-        <section className="py-8 bg-white">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {secondaryBanners.map((banner) => (
-                <Link
-                  to={banner.linkUrl || '/shop'}
-                  key={banner.id}
-                  className="group relative overflow-hidden"
-                  style={{ minHeight: '480px' }}
-                >
-                  <img
-                    src={banner.imageUrl}
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
-                    alt={banner.title || ''}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent group-hover:from-black/75 transition-all duration-500" />
-                  <div className="absolute inset-0 flex flex-col justify-end p-10 text-white">
-                    {banner.subtitle && (
-                      <p className="text-[9px] uppercase tracking-[0.35em] mb-3 text-bj-champagne/80">{banner.subtitle}</p>
-                    )}
-                    <h3 className="font-serif text-3xl md:text-4xl mb-6 leading-tight">{banner.title}</h3>
-                    <span className="text-[10px] uppercase tracking-[0.3em] border-b border-white/40 pb-1 self-start group-hover:border-bj-gold group-hover:text-bj-gold transition-all duration-300">
-                      {banner.buttonText || 'Discover'} →
+      {/* ===== COLLECTIONS: editorial pair, offset, captions below the image ===== */}
+      {collections.length > 0 && (
+        <section className="page-container pb-20 md:pb-32">
+          <div className="grid md:grid-cols-2 gap-x-6 gap-y-14">
+            {collections.map((banner, i) => (
+              <Reveal key={banner.id} delay={i * 0.12} className={i === 1 ? 'md:mt-24' : ''}>
+                <Link to={banner.linkUrl || '/shop'} className="group block">
+                  <div className="relative aspect-[4/5] overflow-hidden bg-bj-cream">
+                    <img
+                      src={banner.imageUrl}
+                      alt=""
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1000ms] ease-out group-hover:scale-[1.04]"
+                    />
+                  </div>
+                  <div className="mt-6 flex items-end justify-between gap-6">
+                    <div>
+                      <h3 className="font-serif text-3xl md:text-4xl text-bj-charcoal leading-tight">{banner.title}</h3>
+                      {banner.subtitle && <p className="mt-2 text-gray-600">{banner.subtitle}.</p>}
+                    </div>
+                    <span className="shrink-0 inline-flex items-center gap-2 text-sm text-bj-charcoal border-b border-bj-charcoal pb-1 transition-colors group-hover:text-bj-gold-deep group-hover:border-bj-gold-deep">
+                      {banner.buttonText || 'Shop Now'}
+                      <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
                     </span>
                   </div>
                 </Link>
-              ))}
-            </div>
+              </Reveal>
+            ))}
           </div>
         </section>
       )}
 
-      {/* ===== FEATURED JEWELLERY ===== */}
-      <section className="py-24 bg-bj-ivory">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
-            <div>
-              <p className="section-eyebrow">The Masterpieces</p>
-              <h2 className="section-title">Signature Pieces</h2>
-              <div className="gold-rule-left" />
-            </div>
+      {/* ===== SIGNATURE PIECES ===== */}
+      <section className="bg-white py-20 md:py-32">
+        <div className="page-container">
+          <Reveal className="flex items-end justify-between gap-6 mb-10 md:mb-14">
+            <h2 className="section-title">Signature Pieces</h2>
             <Link
               to="/shop"
-              className="text-[10px] uppercase tracking-[0.3em] text-bj-charcoal hover:text-bj-gold border-b border-bj-charcoal hover:border-bj-gold transition-all pb-1 self-start md:self-end font-medium"
+              className="shrink-0 inline-flex items-center gap-2 text-sm text-bj-charcoal border-b border-bj-charcoal pb-1 hover:text-bj-gold-deep hover:border-bj-gold-deep transition-colors"
             >
-              View All Pieces →
+              View All <ArrowRight size={14} />
             </Link>
+          </Reveal>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-6 gap-y-12">
+            {loading
+              ? [1, 2, 3, 4].map((n) => <SkeletonCard key={n} />)
+              : products.slice(0, 4).map((product, i) => (
+                  <Reveal key={product.id} delay={i * 0.08}>
+                    <ProductCard product={product} />
+                  </Reveal>
+                ))}
           </div>
+        </div>
+      </section>
 
-          {loading ? (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
-              {[1, 2, 3, 4].map(n => (
-                <div key={n}>
-                  <div className="aspect-[4/5] skeleton rounded-none mb-5" />
-                  <div className="skeleton h-3 w-24 mx-auto mb-2 rounded" />
-                  <div className="skeleton h-5 w-40 mx-auto mb-2 rounded" />
-                  <div className="skeleton h-4 w-20 mx-auto rounded" />
+      {/* ===== HONEST PRICING: a real breakdown from a real piece ===== */}
+      {pricedPiece && (
+        <section className="page-container py-20 md:py-32">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            <Reveal className="lg:col-span-5">
+              <h2 className="section-title text-balance">Priced by weight, shown in full.</h2>
+              <p className="mt-6 text-lg text-gray-600 leading-relaxed max-w-md">
+                Gold and silver pieces are priced from today's rate for their purity and net weight, plus making charges. GST is included.
+              </p>
+              <Link
+                to={`/product/${pricedPiece.slug}`}
+                className="mt-8 inline-flex items-center gap-2 text-sm text-bj-charcoal border-b border-bj-charcoal pb-1 hover:text-bj-gold-deep hover:border-bj-gold-deep transition-colors"
+              >
+                See this piece <ArrowRight size={14} />
+              </Link>
+            </Reveal>
+            <Reveal delay={0.15} className="lg:col-span-6 lg:col-start-7">
+              <div className="grid sm:grid-cols-[180px_1fr] gap-6 items-start bg-white border border-gray-100 p-5 md:p-6">
+                <Link to={`/product/${pricedPiece.slug}`} className="block aspect-square sm:aspect-[3/4] overflow-hidden bg-bj-cream">
+                  {pricedPiece.images?.[0]?.url && (
+                    <img src={pricedPiece.images[0].url} alt={pricedPiece.name} loading="lazy" className="w-full h-full object-cover" />
+                  )}
+                </Link>
+                <div>
+                  <p className="text-xs text-gray-500">
+                    {pricedPiece.metalType === 'GOLD' ? 'Gold' : pricedPiece.metalType === 'SILVER' ? 'Silver' : 'Platinum'} {pricedPiece.purity}
+                  </p>
+                  <h3 className="font-serif text-2xl text-bj-charcoal leading-tight mt-1 mb-4">{pricedPiece.name}</h3>
+                  <PriceBreakdown
+                    priceType={pricedPiece.priceType}
+                    totalPrice={pricedPiece.price}
+                    fixedPrice={pricedPiece.fixedPrice}
+                    metalType={pricedPiece.metalType}
+                    purity={pricedPiece.purity}
+                    netWeight={pricedPiece.netWeight}
+                    makingCharge={pricedPiece.makingCharge}
+                    stoneCharge={pricedPiece.stoneCharge}
+                  />
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      )}
+
+      {/* ===== THE HOUSE: story, confirmed guarantees, the appointment ===== */}
+      <section className="bg-white py-20 md:py-32">
+        <div className="page-container grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          {storyImage && (
+            <Reveal className="lg:col-span-5 order-last lg:order-first">
+              <div className="aspect-[4/5] overflow-hidden bg-bj-cream">
+                <img src={storyImage} alt="" loading="lazy" className="w-full h-full object-cover" />
+              </div>
+            </Reveal>
+          )}
+          <Reveal delay={0.1} className={storyImage ? 'lg:col-span-6 lg:col-start-7' : 'lg:col-span-8'}>
+            <h2 className="section-title text-balance">Jewellery that becomes part of your legacy.</h2>
+            <p className="mt-6 text-lg text-gray-600 leading-relaxed max-w-xl">{story}</p>
+
+            <dl className="mt-12 grid sm:grid-cols-3 gap-8 border-t border-gray-200 pt-8">
+              {promises.map((p) => (
+                <div key={p.title}>
+                  <dt className="font-serif text-xl text-bj-charcoal leading-snug">{p.title}</dt>
+                  <dd className="mt-2 text-sm text-gray-600 leading-relaxed">{p.body}</dd>
                 </div>
               ))}
+            </dl>
+
+            <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4">
+              <Link to="/appointments" className="btn-gold">
+                Book an Appointment
+              </Link>
+              <p className="text-sm text-gray-600">Bridal, custom design and shopping consultations.</p>
             </div>
-          ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 lg:gap-x-10 gap-y-12">
-              {products.slice(0, 4).map((product, i) => (
-                <Link
-                  key={product.id}
-                  to={`/product/${product.slug}`}
-                  className="group block"
-                  style={{ animationDelay: `${i * 80}ms` }}
-                >
-                  <div className="relative aspect-[4/5] overflow-hidden bg-bj-cream mb-5">
-                    {product.images && product.images.length > 0 ? (
-                      <img
-                        src={product.images[0].url}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-700 ease-out"
-                        style={{ transitionDuration: '800ms' }}
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-bj-cream to-bj-gold-pale">
-                        <span className="font-serif text-4xl text-bj-gold/25">BJ</span>
-                      </div>
-                    )}
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/8 transition-all duration-500" />
-                    {product.tags && product.tags.length > 0 && (
-                      <span className="absolute top-4 left-4 badge-gold shadow-sm">{product.tags[0]}</span>
-                    )}
-                    {/* Quick add button */}
-                    <div className="absolute inset-x-0 bottom-0 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                      <div className="bg-bj-charcoal/90 backdrop-blur-sm text-white text-[9px] uppercase tracking-[0.25em] py-3 text-center font-medium hover:bg-bj-gold transition-colors">
-                        View Details
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-center px-2">
-                    <p className="text-[9px] uppercase tracking-[0.25em] text-bj-stone mb-1.5">
-                      {product.category?.name || product.metalType || 'Fine Jewellery'}
-                      {product.purity && ` · ${product.purity}`}
-                    </p>
-                    <h3 className="font-serif text-xl leading-snug group-hover:text-bj-gold transition-colors duration-300">
-                      {product.name}
-                    </h3>
-                    <p className="mt-2.5 text-sm font-medium text-bj-charcoal">
-                      ₹{Number(product.price).toLocaleString('en-IN')}
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
+          </Reveal>
         </div>
       </section>
-
-      {/* ===== BRAND STORY ===== */}
-      <section className="py-28 bg-luxury-gradient text-white relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-bj-gold/30 to-transparent" />
-        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-bj-gold/20 to-transparent" />
-        <div className="absolute -top-32 -left-32 w-80 h-80 rounded-full border border-bj-gold/8 blur-xl" />
-        <div className="absolute -bottom-20 -right-20 w-96 h-96 rounded-full border border-bj-gold/8 blur-2xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-bj-gold/5 blur-3xl" />
-
-        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-          <div className="flex items-center justify-center gap-5 mb-8">
-            <div className="w-20 h-px bg-bj-gold/40" />
-            <p className="uppercase tracking-[0.4em] text-[9px] text-bj-gold font-medium">The House of Baikunthh</p>
-            <div className="w-20 h-px bg-bj-gold/40" />
-          </div>
-
-          <h2 className="font-serif text-4xl md:text-6xl leading-tight mb-8 text-balance">
-            Jewellery that becomes<br className="hidden md:block" /> part of your legacy.
-          </h2>
-
-          <p className="text-sm leading-8 text-gray-400 max-w-2xl mx-auto mb-12">
-            From timeless classics to distinctive statement pieces, every Baikunthh creation is crafted by master artisans to celebrate life's most extraordinary moments. Our commitment to purity, transparency, and exquisite design has made us a trusted name for generations.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to="/shop" className="btn-gold shadow-luxury">
-              Explore Collections
-            </Link>
-            <Link to="/appointments" className="btn-outline-white">
-              Book a Consultation
-            </Link>
-          </div>
-        </div>
-      </section>
-
     </div>
   );
 };

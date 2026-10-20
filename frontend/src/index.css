@@ -7,6 +7,11 @@
    ========================================== */
 
 @layer base {
+  :root {
+    /* announcement bar (2rem) + navbar (4rem); every page and sticky offset measures from this */
+    --header-h: calc(6rem + 1px); /* + navbar bottom border */
+  }
+
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
@@ -15,7 +20,7 @@
 
   body {
     @apply bg-bj-ivory text-bj-charcoal;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Jost Variable', 'Jost', system-ui, sans-serif;
     font-weight: 400;
   }
 
@@ -50,10 +55,10 @@
 
   /* ===== BUTTONS ===== */
   .btn-gold {
-    @apply inline-flex items-center justify-center gap-2 bg-bj-gold text-white px-8 py-3.5 text-xs font-medium uppercase tracking-[0.2em] transition-all duration-300;
+    @apply inline-flex items-center justify-center gap-2 bg-bj-gold-deep text-white px-8 py-3.5 text-xs font-medium uppercase tracking-[0.2em] transition-all duration-300;
   }
   .btn-gold:hover {
-    @apply bg-bj-gold-dark shadow-luxury;
+    @apply bg-bj-gold-deeper shadow-luxury;
     transform: translateY(-1px);
   }
   .btn-gold:active {
@@ -61,10 +66,10 @@
   }
 
   .btn-gold-sm {
-    @apply inline-flex items-center justify-center gap-1.5 bg-bj-gold text-white px-5 py-2.5 text-[10px] font-medium uppercase tracking-[0.2em] transition-all duration-300;
+    @apply inline-flex items-center justify-center gap-1.5 bg-bj-gold-deep text-white px-5 py-2.5 text-[10px] font-medium uppercase tracking-[0.2em] transition-all duration-300;
   }
   .btn-gold-sm:hover {
-    @apply bg-bj-gold-dark;
+    @apply bg-bj-gold-deeper;
   }
 
   .btn-outline {
@@ -93,7 +98,7 @@
     @apply border-bj-gold ring-2 ring-bj-gold/10;
   }
   .input-luxury::placeholder {
-    @apply text-gray-400;
+    @apply text-gray-500;
   }
 
   .select-luxury {
@@ -105,7 +110,7 @@
 
   /* ===== LABELS ===== */
   .label-luxury {
-    @apply block text-[10px] uppercase tracking-[0.2em] text-gray-500 mb-2 font-medium;
+    @apply block text-[10px] uppercase tracking-[0.2em] text-gray-600 mb-2 font-medium;
   }
 
   /* ===== SECTION HEADERS ===== */
@@ -115,6 +120,21 @@
 
   .section-title {
     @apply font-serif text-4xl md:text-5xl text-bj-charcoal leading-tight;
+  }
+
+  /* ===== PAGE STRUCTURE ===== */
+  .page-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6;
+  }
+  .page-shell {
+    @apply pb-20;
+    padding-top: calc(var(--header-h) + 2rem);
+  }
+  @media (min-width: 768px) {
+    .page-shell { padding-top: calc(var(--header-h) + 3rem); }
+  }
+  .page-title {
+    @apply font-serif text-3xl md:text-4xl text-bj-charcoal leading-tight;
   }
 
   /* ===== PAGE HERO (internal pages) ===== */
@@ -167,7 +187,7 @@
     @apply w-10 h-10 border border-gray-200 text-sm flex items-center justify-center font-medium cursor-pointer transition-all duration-200 hover:border-bj-gold hover:text-bj-gold;
   }
   .size-option.selected {
-    @apply border-bj-gold bg-bj-gold text-white;
+    @apply border-bj-gold-deep bg-bj-gold-deep text-white;
   }
   .size-option.unavailable {
     @apply opacity-30 cursor-not-allowed line-through;

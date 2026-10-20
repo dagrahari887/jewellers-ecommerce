@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore, API_URL, apiRequest } from '../store/useStore';
+import { Tag } from 'lucide-react';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 
 export const Checkout = () => {
@@ -142,9 +143,9 @@ export const Checkout = () => {
   const finalTotal = cartTotal - (appliedCoupon?.discountAmount || 0);
 
   return (
-    <div className="bg-bj-ivory min-h-screen pt-28 pb-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <h1 className="font-serif text-3xl md:text-4xl text-bj-charcoal mb-10 text-center">Secure Checkout</h1>
+    <div className="page-shell pb-32 lg:pb-20">
+      <div className="page-container">
+        <h1 className="page-title mb-8 md:mb-10">Secure Checkout</h1>
         
         <div className="flex flex-col lg:flex-row gap-10">
           
@@ -164,37 +165,37 @@ export const Checkout = () => {
               </div>
               
               {showAddressForm || addresses.length === 0 ? (
-                <form onSubmit={handleSaveAddress} className="bg-bj-ivory p-6 border border-gray-200">
+                <form onSubmit={handleSaveAddress}>
                   <h3 className="text-sm font-medium mb-4 uppercase tracking-widest text-bj-charcoal">Add New Address</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="label-luxury">Full Name *</label>
+                    <label className="block">
+                      <span className="label-luxury">Full Name *</span>
                       <input required type="text" className="input-luxury" value={newAddress.fullName} onChange={e => setNewAddress({...newAddress, fullName: e.target.value})} />
-                    </div>
-                    <div>
-                      <label className="label-luxury">Phone Number *</label>
+                    </label>
+                    <label className="block">
+                      <span className="label-luxury">Phone Number *</span>
                       <input required type="text" className="input-luxury" value={newAddress.phone} onChange={e => setNewAddress({...newAddress, phone: e.target.value})} />
-                    </div>
-                    <div className="sm:col-span-2">
-                      <label className="label-luxury">Address Line 1 *</label>
+                    </label>
+                    <label className="block sm:col-span-2">
+                      <span className="label-luxury">Address Line 1 *</span>
                       <input required type="text" className="input-luxury" value={newAddress.line1} onChange={e => setNewAddress({...newAddress, line1: e.target.value})} />
-                    </div>
-                    <div className="sm:col-span-2">
-                      <label className="label-luxury">Address Line 2</label>
+                    </label>
+                    <label className="block sm:col-span-2">
+                      <span className="label-luxury">Address Line 2</span>
                       <input type="text" className="input-luxury" value={newAddress.line2} onChange={e => setNewAddress({...newAddress, line2: e.target.value})} />
-                    </div>
-                    <div>
-                      <label className="label-luxury">City *</label>
+                    </label>
+                    <label className="block">
+                      <span className="label-luxury">City *</span>
                       <input required type="text" className="input-luxury" value={newAddress.city} onChange={e => setNewAddress({...newAddress, city: e.target.value})} />
-                    </div>
-                    <div>
-                      <label className="label-luxury">State *</label>
+                    </label>
+                    <label className="block">
+                      <span className="label-luxury">State *</span>
                       <input required type="text" className="input-luxury" value={newAddress.state} onChange={e => setNewAddress({...newAddress, state: e.target.value})} />
-                    </div>
-                    <div>
-                      <label className="label-luxury">Pincode *</label>
+                    </label>
+                    <label className="block">
+                      <span className="label-luxury">Pincode *</span>
                       <input required type="text" className="input-luxury" value={newAddress.pincode} onChange={e => setNewAddress({...newAddress, pincode: e.target.value})} />
-                    </div>
+                    </label>
                   </div>
                   <div className="mt-6 flex gap-3">
                     <button type="submit" disabled={savingAddress} className="btn-gold py-3 px-6">
@@ -210,10 +211,12 @@ export const Checkout = () => {
               ) : (
                 <div className="grid gap-4 sm:grid-cols-2">
                   {addresses.map(addr => (
-                    <div 
+                    <button
+                      type="button"
                       key={addr.id}
                       onClick={() => setSelectedAddressId(addr.id)}
-                      className={`p-4 border cursor-pointer transition-colors ${selectedAddressId === addr.id ? 'border-bj-gold bg-bj-gold/5' : 'border-gray-200 hover:border-bj-gold/50'}`}
+                      aria-pressed={selectedAddressId === addr.id}
+                      className={`text-left p-4 border transition-colors ${selectedAddressId === addr.id ? 'border-bj-gold bg-bj-gold/5' : 'border-gray-200 hover:border-bj-gold/50'}`}
                     >
                       <div className="flex justify-between items-start mb-2">
                         <span className="badge-charcoal">{addr.label}</span>
@@ -223,7 +226,7 @@ export const Checkout = () => {
                       <p className="font-medium text-bj-charcoal mb-1">{addr.fullName}</p>
                       <p className="text-sm text-gray-600 line-clamp-2 h-10">{addr.line1}, {addr.city}</p>
                       <p className="text-sm text-gray-600 mt-2">{addr.phone}</p>
-                    </div>
+                    </button>
                   ))}
                 </div>
               )}
@@ -247,7 +250,7 @@ export const Checkout = () => {
 
           {/* Order Summary */}
           <div className="w-full lg:w-[400px] shrink-0">
-            <div className="bg-white p-6 shadow-sm border border-gray-100 sticky top-24">
+            <div className="bg-white p-6 shadow-sm border border-gray-100 sticky top-[calc(var(--header-h)+1.5rem)]">
               <h2 className="font-serif text-xl mb-6">Order Details</h2>
               
               <div className="space-y-4 mb-6 max-h-60 overflow-y-auto no-scrollbar pr-2">
@@ -286,14 +289,14 @@ export const Checkout = () => {
                 ) : (
                   <div className="flex items-center justify-between p-3 bg-green-50 border border-green-100">
                     <div className="flex items-center gap-2 text-green-800 text-sm font-medium">
-                      <span className="text-lg">🏷️</span> {appliedCoupon.code} Applied
+                      <Tag size={15} /> {appliedCoupon.code} Applied
                     </div>
                     <button onClick={removeCoupon} className="text-xs text-gray-500 hover:text-red-500 underline">Remove</button>
                   </div>
                 )}
               </div>
               
-              <div className="space-y-3 text-sm text-gray-600 mb-6 border-t border-gray-200 pt-4">
+              <div className="space-y-3 text-sm text-gray-600 mb-6 border-t border-gray-200 pt-4 tabular-nums">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span>₹{cartTotal.toLocaleString('en-IN')}</span>
@@ -315,7 +318,7 @@ export const Checkout = () => {
                   <span>Total Payable</span>
                   <span>₹{finalTotal.toLocaleString('en-IN')}</span>
                 </div>
-                <p className="text-[10px] text-right uppercase tracking-widest text-gray-400">Inclusive of GST</p>
+                <p className="text-[10px] text-right uppercase tracking-widest text-gray-500">Inclusive of GST</p>
               </div>
 
               <button 
@@ -325,10 +328,28 @@ export const Checkout = () => {
               >
                 {loading ? 'Processing...' : `Place Order (₹${finalTotal.toLocaleString('en-IN')})`}
               </button>
+              {!selectedAddressId && (
+                <p className="text-xs text-gray-500 text-center mt-3">Add a delivery address to place your order.</p>
+              )}
             </div>
           </div>
           
         </div>
+      </div>
+
+      {/* Mobile order bar: total and the primary action stay in reach */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] px-4 py-3 flex items-center gap-4">
+        <div className="shrink-0">
+          <p className="text-[10px] uppercase tracking-widest text-gray-500">Total Payable</p>
+          <p className="font-serif text-xl text-bj-charcoal">₹{finalTotal.toLocaleString('en-IN')}</p>
+        </div>
+        <button
+          onClick={handleCheckout}
+          disabled={loading || !selectedAddressId}
+          className="btn-gold flex-1 px-4 py-3.5 disabled:opacity-50"
+        >
+          {loading ? 'Processing...' : selectedAddressId ? 'Place Order' : 'Add an Address'}
+        </button>
       </div>
     </div>
   );
