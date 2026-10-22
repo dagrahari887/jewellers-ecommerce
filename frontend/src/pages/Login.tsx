@@ -54,21 +54,17 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bj-ivory pt-32 pb-20 px-6 flex items-center justify-center">
-      <div className="w-full max-w-md">
+    <div className="page-shell px-4">
+      <div className="w-full max-w-md mx-auto">
 
         {/* BRAND */}
-        <div className="text-center mb-12">
-          <p className="text-bj-gold text-[10px] uppercase tracking-[0.35em] mb-4">
-            Baikunthh Jewellers
-          </p>
-
-          <h1 className="font-serif text-5xl text-bj-charcoal">
-            Welcome Back
+        <div className="text-center mb-10">
+          <h1 className="font-serif text-4xl md:text-5xl text-bj-charcoal">
+            Sign In
           </h1>
 
           <p className="text-gray-500 text-sm mt-4">
-            Enter your details to continue your journey.
+            View your orders, saved pieces and appointments.
           </p>
         </div>
 
@@ -99,7 +95,7 @@ export const Login = () => {
 
               <label
                 htmlFor="email"
-                className="absolute left-0 top-3 text-gray-400 text-xs uppercase tracking-widest pointer-events-none transition-all peer-focus:-top-4 peer-focus:text-bj-gold peer-[:not(:placeholder-shown)]:-top-4"
+                className="absolute left-0 top-3 text-gray-500 text-xs uppercase tracking-widest pointer-events-none transition-all peer-focus:-top-4 peer-focus:text-bj-gold peer-[:not(:placeholder-shown)]:-top-4"
               >
                 Email Address
               </label>
@@ -121,7 +117,7 @@ export const Login = () => {
 
               <label
                 htmlFor="password"
-                className="absolute left-0 top-3 text-gray-400 text-xs uppercase tracking-widest pointer-events-none transition-all peer-focus:-top-4 peer-focus:text-bj-gold peer-[:not(:placeholder-shown)]:-top-4"
+                className="absolute left-0 top-3 text-gray-500 text-xs uppercase tracking-widest pointer-events-none transition-all peer-focus:-top-4 peer-focus:text-bj-gold peer-[:not(:placeholder-shown)]:-top-4"
               >
                 Password
               </label>
@@ -131,7 +127,7 @@ export const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-bj-charcoal text-white py-4 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-bj-gold transition-all duration-500 disabled:opacity-50"
+              className="w-full bg-bj-charcoal text-white py-4 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-bj-gold-deep transition-all duration-500 disabled:opacity-50"
             >
               {loading ? 'Signing In...' : 'Sign In'}
             </button>

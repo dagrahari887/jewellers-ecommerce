@@ -1,0 +1,17 @@
+# Dependencies (each environment installs its own; the committed ones were Windows builds)
+node_modules/
+
+# Build output
+dist/
+
+# Secrets: copy backend/.env.example to backend/.env
+.env
+.env.*
+!.env.example
+
+# Per-machine tool settings
+.impeccable/config.local.json
+
+# OS / editor noise
+.DS_Store
+*.log

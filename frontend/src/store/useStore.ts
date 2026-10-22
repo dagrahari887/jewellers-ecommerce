@@ -49,8 +49,8 @@ interface AppState {
   // Cart
   cart: CartItem[];
   addToCart: (item: CartItem) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeFromCart: (productId: string, size?: string) => void;
+  updateQuantity: (productId: string, quantity: number, size?: string) => void;
   clearCart: () => void;
   cartTotal: () => number;
   cartCount: () => number;
@@ -116,17 +116,17 @@ export const useStore = create<AppState>()(
           return { cart: [...state.cart, { ...item, quantity: item.quantity || 1 }] };
         }),
 
-      updateQuantity: (productId, quantity) =>
+      updateQuantity: (productId, quantity, size) =>
         set((state) => ({
           cart: state.cart.map((item) =>
-            item.productId === productId
+            item.productId === productId && item.size === size
               ? { ...item, quantity: Math.max(1, quantity) }
               : item
           ),
         })),
 
-      removeFromCart: (productId) =>
-        set((state) => ({ cart: state.cart.filter((item) => item.productId !== productId) })),
+      removeFromCart: (productId, size) =>
+        set((state) => ({ cart: state.cart.filter((item) => !(item.productId === productId && item.size === size)) })),
 
       clearCart: () => set({ cart: [] }),
 

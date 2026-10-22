@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
 import { Heart, ShoppingBag, Trash2 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { EmptyState } from '../components/EmptyState';
+import { ProductCard } from '../components/ProductCard';
 
 export const Wishlist = () => {
   const wishlist = useStore((s) => s.wishlist);
@@ -11,12 +11,12 @@ export const Wishlist = () => {
 
   if (wishlist.length === 0) {
     return (
-      <div className="bg-bj-ivory min-h-screen pt-32 pb-20">
-        <div className="max-w-4xl mx-auto px-4">
+      <div className="page-shell">
+        <div className="page-container">
           <EmptyState 
             icon={<Heart size={48} className="text-bj-gold fill-bj-gold/20" />}
             title="Your Wishlist is Empty"
-            description="Save your favorite Baikunthh pieces here to curate your dream collection."
+            description="Tap the heart on any piece to keep it here for later."
             actionText="Explore Jewellery"
             actionLink="/shop"
           />
@@ -26,48 +26,31 @@ export const Wishlist = () => {
   }
 
   return (
-    <div className="bg-bj-ivory min-h-screen pt-28 pb-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="text-center mb-10">
-          <p className="section-eyebrow">Saved Items</p>
-          <h1 className="font-serif text-3xl md:text-4xl text-bj-charcoal mb-2">Your Wishlist</h1>
-          <p className="text-sm text-gray-500">{wishlist.length} {wishlist.length === 1 ? 'item' : 'items'} saved</p>
+    <div className="page-shell">
+      <div className="page-container">
+        <div className="mb-8 md:mb-10">
+          <h1 className="page-title mb-2">Your Wishlist</h1>
+          <p className="text-sm text-gray-500">{wishlist.length} {wishlist.length === 1 ? 'piece' : 'pieces'} saved</p>
         </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-x-6 md:gap-y-10">
+
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6">
           {wishlist.map((item) => (
-            <div key={item.productId} className="group block bg-white border border-gray-100 p-3 sm:p-4 card-luxury">
-              <Link to={`/product/${item.slug}`} className="block relative aspect-product overflow-hidden bg-bj-cream mb-4">
-                {item.image ? (
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center font-serif text-3xl text-gray-200">BJ</div>
-                )}
-                <button 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    removeFromWishlist(item.productId);
-                    addToast('info', 'Removed from wishlist');
-                  }}
-                  className="absolute top-2 right-2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm"
-                  title="Remove from wishlist"
-                >
-                  <Trash2 size={14} />
-                </button>
-              </Link>
-              
-              <div className="text-center">
-                <p className="text-[9px] uppercase tracking-[0.2em] text-bj-stone mb-1.5 line-clamp-1">
-                  {item.category || 'Jewellery'} {item.purity && ` · ${item.purity}`}
-                </p>
-                <Link to={`/product/${item.slug}`}>
-                  <h3 className="font-serif text-lg group-hover:text-bj-gold transition-colors line-clamp-1">{item.name}</h3>
-                </Link>
-                <p className="mt-1.5 font-medium text-bj-charcoal">₹{Number(item.price).toLocaleString('en-IN')}</p>
-                
-                <button 
-                  onClick={(e) => {
-                    e.preventDefault();
+            <div key={item.productId} className="flex flex-col">
+              <ProductCard
+                product={{
+                  id: item.productId,
+                  name: item.name,
+                  slug: item.slug,
+                  price: item.price,
+                  purity: item.purity,
+                  category: item.category ? { name: item.category } : null,
+                  images: item.image ? [{ id: item.productId, url: item.image }] : [],
+                }}
+              />
+              <div className="flex gap-2 mt-4">
+                <button
+                  type="button"
+                  onClick={() => {
                     addToCart({
                       productId: item.productId,
                       name: item.name,
@@ -79,9 +62,21 @@ export const Wishlist = () => {
                     removeFromWishlist(item.productId);
                     addToast('success', 'Moved to shopping bag');
                   }}
-                  className="btn-gold-sm w-full mt-4 py-2.5 text-[9px] flex items-center justify-center gap-1.5"
+                  className="btn-outline flex-1 min-w-0 px-3 py-2.5 text-[10px]"
                 >
                   <ShoppingBag size={12} /> Move to Bag
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    removeFromWishlist(item.productId);
+                    addToast('info', 'Removed from wishlist');
+                  }}
+                  className="shrink-0 w-11 border border-gray-200 text-gray-500 hover:border-red-300 hover:text-red-500 flex items-center justify-center transition-colors"
+                  title="Remove from wishlist"
+                  aria-label={`Remove ${item.name} from wishlist`}
+                >
+                  <Trash2 size={14} />
                 </button>
               </div>
             </div>

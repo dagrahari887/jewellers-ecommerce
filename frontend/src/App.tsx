@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ToastContainer } from './components/Toast';
@@ -32,6 +33,7 @@ function ScrollToTop() {
 
 function App() {
   return (
+    <MotionConfig reducedMotion="user">
     <BrowserRouter>
       <ScrollToTop />
       <div className="flex flex-col min-h-screen">
@@ -58,6 +60,7 @@ function App() {
         <Footer />
       </div>
     </BrowserRouter>
+    </MotionConfig>
   );
 }
 

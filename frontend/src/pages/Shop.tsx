@@ -101,17 +101,14 @@ export const Shop = () => {
   ].filter(Boolean) as { key: string; label: string }[];
 
   return (
-    <div className="bg-bj-ivory min-h-screen">
+    <div className="page-shell">
+      <div className="page-container">
 
-      {/* Page Header */}
-      <div className="pt-32 pb-10 text-center px-4 border-b border-gray-100">
-        <p className="section-eyebrow">{currentCategory || currentCollection || 'Collection'}</p>
-        <h1 className="font-serif text-4xl md:text-5xl text-bj-charcoal mb-3">{pageTitle}</h1>
-        <p className="text-gray-500 max-w-xl mx-auto text-sm">{pageDesc}</p>
-        <div className="gold-rule" />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        {/* Page Header */}
+        <div className="mb-6 md:mb-8">
+          <h1 className="page-title mb-2">{pageTitle}</h1>
+          <p className="text-gray-500 max-w-xl text-sm leading-relaxed">{pageDesc}</p>
+        </div>
 
         {/* Active filter chips */}
         {activeFilters.length > 0 && (
@@ -135,7 +132,7 @@ export const Shop = () => {
         )}
 
         {/* Tools bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-gray-200 mb-8 sticky top-[88px] bg-bj-ivory z-40">
+        <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-gray-200 mb-8 sticky top-[var(--header-h)] bg-bj-ivory z-40">
           {/* Mobile filter toggle */}
           <button
             className="md:hidden flex items-center gap-2 text-xs uppercase tracking-widest font-medium text-bj-charcoal"
@@ -146,9 +143,9 @@ export const Shop = () => {
             {hasActiveFilters && <span className="w-2 h-2 rounded-full bg-bj-gold" />}
           </button>
 
-          <div className="hidden md:flex items-center gap-2 text-[10px] text-gray-400 uppercase tracking-widest">
+          <div className="hidden md:flex items-center gap-2 text-[10px] text-gray-500 uppercase tracking-widest">
             <SlidersHorizontal size={13} />
-            <span>{loading ? '—' : `${products.length} products`}</span>
+            <span>{loading ? 'Loading' : `${products.length} ${products.length === 1 ? 'piece' : 'pieces'}`}</span>
           </div>
 
           <div className="flex items-center gap-5">
@@ -156,14 +153,14 @@ export const Shop = () => {
             <div className="hidden sm:flex items-center gap-2 border-r border-gray-200 pr-5">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 transition-colors ${viewMode === 'grid' ? 'text-bj-gold' : 'text-gray-400 hover:text-bj-charcoal'}`}
+                className={`p-1.5 transition-colors ${viewMode === 'grid' ? 'text-bj-gold' : 'text-gray-500 hover:text-bj-charcoal'}`}
                 title="Grid view"
               >
                 <LayoutGrid size={16} />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-1.5 transition-colors ${viewMode === 'list' ? 'text-bj-gold' : 'text-gray-400 hover:text-bj-charcoal'}`}
+                className={`p-1.5 transition-colors ${viewMode === 'list' ? 'text-bj-gold' : 'text-gray-500 hover:text-bj-charcoal'}`}
                 title="List view"
               >
                 <List size={16} />
@@ -229,7 +226,7 @@ export const Shop = () => {
                 {/* Categories */}
                 {categories.length > 0 && (
                   <div>
-                    <h3 className="text-[10px] uppercase tracking-[0.25em] font-semibold text-gray-400 mb-4 pb-2 border-b border-gray-100">
+                    <h3 className="text-[10px] uppercase tracking-[0.25em] font-semibold text-gray-500 mb-4 pb-2 border-b border-gray-100">
                       Categories
                     </h3>
                     <ul className="space-y-2.5">
@@ -248,7 +245,7 @@ export const Shop = () => {
                             className={`text-sm transition-colors text-left flex items-center justify-between w-full ${currentCategory === cat.name ? 'text-bj-gold font-medium' : 'text-gray-600 hover:text-bj-gold'}`}
                           >
                             <span>{cat.name}</span>
-                            <span className="text-gray-400 text-[10px]">{cat._count?.products || 0}</span>
+                            <span className="text-gray-500 text-[10px]">{cat._count?.products || 0}</span>
                           </button>
                         </li>
                       ))}
@@ -259,7 +256,7 @@ export const Shop = () => {
                 {/* Collections */}
                 {collections.length > 0 && (
                   <div>
-                    <h3 className="text-[10px] uppercase tracking-[0.25em] font-semibold text-gray-400 mb-4 pb-2 border-b border-gray-100">
+                    <h3 className="text-[10px] uppercase tracking-[0.25em] font-semibold text-gray-500 mb-4 pb-2 border-b border-gray-100">
                       Collections
                     </h3>
                     <ul className="space-y-2.5">
@@ -270,7 +267,7 @@ export const Shop = () => {
                             className={`text-sm transition-colors text-left flex items-center justify-between w-full ${currentCollection === col.name ? 'text-bj-gold font-medium' : 'text-gray-600 hover:text-bj-gold'}`}
                           >
                             <span>{col.name}</span>
-                            <span className="text-gray-400 text-[10px]">{col._count?.products || 0}</span>
+                            <span className="text-gray-500 text-[10px]">{col._count?.products || 0}</span>
                           </button>
                         </li>
                       ))}
@@ -280,7 +277,7 @@ export const Shop = () => {
 
                 {/* Metal Type */}
                 <div>
-                  <h3 className="text-[10px] uppercase tracking-[0.25em] font-semibold text-gray-400 mb-4 pb-2 border-b border-gray-100">
+                  <h3 className="text-[10px] uppercase tracking-[0.25em] font-semibold text-gray-500 mb-4 pb-2 border-b border-gray-100">
                     Metal
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -288,7 +285,7 @@ export const Shop = () => {
                       <button
                         key={m}
                         onClick={() => handleFilter('metal', currentMetal === m ? null : m)}
-                        className={`px-3 py-1.5 text-[10px] uppercase tracking-widest border transition-all ${currentMetal === m ? 'border-bj-gold bg-bj-gold text-white' : 'border-gray-200 text-gray-600 hover:border-bj-gold hover:text-bj-gold'}`}
+                        className={`px-3 py-1.5 text-[10px] uppercase tracking-widest border transition-all ${currentMetal === m ? 'border-bj-gold-deep bg-bj-gold-deep text-white' : 'border-gray-200 text-gray-600 hover:border-bj-gold hover:text-bj-gold'}`}
                       >
                         {m}
                       </button>
@@ -298,7 +295,7 @@ export const Shop = () => {
 
                 {/* Purity */}
                 <div>
-                  <h3 className="text-[10px] uppercase tracking-[0.25em] font-semibold text-gray-400 mb-4 pb-2 border-b border-gray-100">
+                  <h3 className="text-[10px] uppercase tracking-[0.25em] font-semibold text-gray-500 mb-4 pb-2 border-b border-gray-100">
                     Purity
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -306,7 +303,7 @@ export const Shop = () => {
                       <button
                         key={p}
                         onClick={() => handleFilter('purity', currentPurity === p ? null : p)}
-                        className={`px-3 py-1.5 text-[10px] uppercase tracking-widest border transition-all ${currentPurity === p ? 'border-bj-gold bg-bj-gold text-white' : 'border-gray-200 text-gray-600 hover:border-bj-gold hover:text-bj-gold'}`}
+                        className={`px-3 py-1.5 text-[10px] uppercase tracking-widest border transition-all ${currentPurity === p ? 'border-bj-gold-deep bg-bj-gold-deep text-white' : 'border-gray-200 text-gray-600 hover:border-bj-gold hover:text-bj-gold'}`}
                       >
                         {p}
                       </button>

@@ -57,21 +57,17 @@ export const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bj-ivory pt-32 pb-20 px-6 flex items-center justify-center">
-      <div className="w-full max-w-md">
+    <div className="page-shell px-4">
+      <div className="w-full max-w-md mx-auto">
 
         {/* BRAND */}
-        <div className="text-center mb-12">
-          <p className="text-bj-gold text-[10px] uppercase tracking-[0.35em] mb-4">
-            Baikunthh Jewellers
-          </p>
-
-          <h1 className="font-serif text-5xl text-bj-charcoal">
-            Begin Your Journey
+        <div className="text-center mb-10">
+          <h1 className="font-serif text-4xl md:text-5xl text-bj-charcoal">
+            Create an Account
           </h1>
 
           <p className="text-gray-500 text-sm mt-4">
-            Create your private Baikunthh account.
+            Save pieces, check out faster and track your orders.
           </p>
         </div>
 
@@ -102,7 +98,7 @@ export const Register = () => {
 
               <label
                 htmlFor="name"
-                className="absolute left-0 top-3 text-gray-400 text-xs uppercase tracking-widest pointer-events-none transition-all peer-focus:-top-4 peer-focus:text-bj-gold peer-[:not(:placeholder-shown)]:-top-4"
+                className="absolute left-0 top-3 text-gray-500 text-xs uppercase tracking-widest pointer-events-none transition-all peer-focus:-top-4 peer-focus:text-bj-gold peer-[:not(:placeholder-shown)]:-top-4"
               >
                 Full Name
               </label>
@@ -124,7 +120,7 @@ export const Register = () => {
 
               <label
                 htmlFor="email"
-                className="absolute left-0 top-3 text-gray-400 text-xs uppercase tracking-widest pointer-events-none transition-all peer-focus:-top-4 peer-focus:text-bj-gold peer-[:not(:placeholder-shown)]:-top-4"
+                className="absolute left-0 top-3 text-gray-500 text-xs uppercase tracking-widest pointer-events-none transition-all peer-focus:-top-4 peer-focus:text-bj-gold peer-[:not(:placeholder-shown)]:-top-4"
               >
                 Email Address
               </label>
@@ -147,7 +143,7 @@ export const Register = () => {
 
               <label
                 htmlFor="phone"
-                className="absolute left-0 top-3 text-gray-400 text-xs uppercase tracking-widest pointer-events-none transition-all peer-focus:-top-4 peer-focus:text-bj-gold peer-[:not(:placeholder-shown)]:-top-4"
+                className="absolute left-0 top-3 text-gray-500 text-xs uppercase tracking-widest pointer-events-none transition-all peer-focus:-top-4 peer-focus:text-bj-gold peer-[:not(:placeholder-shown)]:-top-4"
               >
                 Phone Number
               </label>
@@ -170,7 +166,7 @@ export const Register = () => {
 
               <label
                 htmlFor="password"
-                className="absolute left-0 top-3 text-gray-400 text-xs uppercase tracking-widest pointer-events-none transition-all peer-focus:-top-4 peer-focus:text-bj-gold peer-[:not(:placeholder-shown)]:-top-4"
+                className="absolute left-0 top-3 text-gray-500 text-xs uppercase tracking-widest pointer-events-none transition-all peer-focus:-top-4 peer-focus:text-bj-gold peer-[:not(:placeholder-shown)]:-top-4"
               >
                 Password
               </label>
@@ -180,7 +176,7 @@ export const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-bj-charcoal text-white py-4 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-bj-gold transition-all duration-500 disabled:opacity-50"
+              className="w-full bg-bj-charcoal text-white py-4 uppercase tracking-[0.25em] text-[10px] font-bold hover:bg-bj-gold-deep transition-all duration-500 disabled:opacity-50"
             >
               {loading ? 'Creating Account...' : 'Create Account'}
             </button>
